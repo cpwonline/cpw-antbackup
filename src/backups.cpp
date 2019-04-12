@@ -11,6 +11,8 @@ backups::~backups()
 void backups::data()
 {
 	std::cout << "\n\n* Recolecting data";
+	std::cout << "\n- Title: ";
+	std::cin >> title;
 	std::cout << "\n- Target: ";
 	std::cin >> target;
 	std::cout << "\n- Destiny: ";
@@ -44,8 +46,9 @@ bool backups::addRecord()
 
     // Create SQL statement in string type
         std::string sql2;
-        sql2 = "INSERT INTO backups (target, destiny, type, local, compression, repeat, datetimeB, dateFreg) "
+        sql2 = "INSERT INTO backups (title, target, destiny, type, local, compression, repeat, datetimeB, dateFreg) "
             "VALUES ("
+                "'" + title + "',"
                 "'" + target + "',"
                 "'" + destiny + "',"
                 "'" + type + "',"
@@ -141,6 +144,7 @@ void backups::configureDB()
     // SQL Query
         genDB.conGen.querySQL = "CREATE TABLE backups ("
                 "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+                "title VARCHAR(50) NOT NULL,"
                 "target VARCHAR(3000) NOT NULL,"
                 "destiny VARCHAR(3000) NOT NULL,"
                 "type VARCHAR(10) NOT NULL,"
@@ -229,6 +233,7 @@ bool backups::editRecord()
 
         std::string sql2;
         sql2 = "UPDATE backups SET "
+                "title='" + title + "',"
                 "target='" + target + "',"
                 "destiny='" + destiny + "',"
                 "type='" + type + "',"

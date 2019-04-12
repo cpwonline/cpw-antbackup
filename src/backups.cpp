@@ -42,6 +42,7 @@ void backups::data()
         if(type == 0)
         {
             std::cout << "   |--Target1: Objetive\n";
+            backupObjetive.type = 0;
             std::cout << "      |-- Local (1=yes/0=no): ";
             std::cin >> backupObjetive.local;
             std::cout << "      |-- Host: ";
@@ -78,6 +79,7 @@ void backups::data()
         }
 
         std::cout << "   |--Target2: Destiny\n";
+        backupDestiny.type = 1;
         std::cout << "      |-- Local (1=yes/0=no): ";
         std::cin >> backupDestiny.local;
         std::cout << "      |-- Host: ";
@@ -141,8 +143,9 @@ bool backups::addRecord()
         // if is files or database
             if(type == 0)
             {
-                sql2 = "INSERT INTO targets (local, host, options, target, freg, id_backup)"
+                sql2 = "INSERT INTO targets (type, local, host, options, target, freg, id_backup)"
                     " VALUES ("
+                        "'" + std::to_string(backupObjetive.type) + "',"
                         "'" + std::to_string(backupObjetive.local) + "',"
                         "'" + backupObjetive.host + "',"
                         "'" + backupObjetive.options + "',"
@@ -203,6 +206,7 @@ bool backups::addRecord()
         // SQL String
                 sql2 = "INSERT INTO targets (local, host, options, target, freg, id_backup)"
                     " VALUES ("
+                        "'" + std::to_string(backupDestiny.type) + "',"
                         "'" + std::to_string(backupDestiny.local) + "',"
                         "'" + backupDestiny.host + "',"
                         "'" + backupDestiny.options + "',"
@@ -444,6 +448,7 @@ void backups::configureDB()
             ");"
             "CREATE TABLE IF NOT EXISTS targets("
                 "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+                "type INTEGER (1) NOT NULL,"
                 "target VARCHAR(3000) NOT NULL,"
                 "local CHAR(1) NOT NULL,"
                 "host VARCHAR(50) NOT NULL,"

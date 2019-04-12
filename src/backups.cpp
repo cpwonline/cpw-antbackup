@@ -139,21 +139,10 @@ bool backups::addRecord()
             systemDB.conGen.convertToChar(sql2);
 
         // Execute SQL statement
-            systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, NULL, 0, & systemDB.conGen.error);
-            if (systemDB.conGen.response != SQLITE_OK)
-            {
-                fprintf(stderr, "--Error--: %s\n", systemDB.conGen.error);
-                sqlite3_free(systemDB.conGen.error);
-                is_ok = false;
-            }
-            else
-            {
-                fprintf(stdout, "--Ready Backups--\n");
-                is_ok = true;
-            }
+            systemDB.conGen.executeSQL();
 
         // Delete dynamic memory
-            delete[] systemDB.conGen.querySQL;
+            systemDB.conGen.deleteMemory();
 
     // Files (Objetive) or Databases
         // if is files or database
@@ -588,4 +577,24 @@ void backups::db::connection::convertToChar(std::string sql2)
     {
         querySQL[a] = sql2[a];
     }
+}
+bool backups::db::connection::executeSQL()
+{
+
+    response = sqlite3_exec(objSQLite, querySQL, NULL, 0, & error);
+    if (response != SQLITE_OK)
+    {
+        fprintf(stderr, "--Error--: %s\n", error);
+        sqlite3_free(error);
+        return false;
+    }
+    else
+    {
+        fprintf(stdout, "--Ready Backups--\n");
+        return true;
+    }
+}
+void backups::db::connection::deleteMemory()
+{
+    delete[] querySQL;
 }

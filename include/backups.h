@@ -1,4 +1,3 @@
-
 #ifndef _BACKUPS_H_
 #define _BACKUPS_H_
 
@@ -56,8 +55,8 @@ class backups
             info infoGen;
             connection conGen;
 		};
-		std::string target;
-		std::string destiny;
+
+		std::string target, destiny, type;
 		char compression, repeat;
 		datetime::date dateBackup;
 		datetime::time timeBackup;

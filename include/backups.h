@@ -31,7 +31,7 @@ class backups
         // Structs and unions
             struct targets
             {
-                short id;
+                short id, type;
                 std::string target, host, options;
                 short local;
             };

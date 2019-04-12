@@ -237,32 +237,33 @@ void backups::viewRecords()
 {
     std::cout << "\n|--Showing records";
 
-    // Create SQL statement
-        systemDB.conGen.querySQL = "SELECT * FROM backups, targets WHERE backups.id=targets.id_backup;";
+        systemDB.conGen.querySQL = "SELECT * FROM backups;";
 
-    // Handle records
-        auto handleRecords = [](void *nothing, int argc, char **argv, char **colNames) -> int
-        {
-            std::cout << "\n";
-            for(int i = 0; i < argc; i++)
-            {
-                printf("%s: '%s'\n", colNames[i], argv[i]);
-            }
-            printf("\n");
-            return 0;
-        };
-        printf("\n");
-
-    // Execute SQL statement
-        systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, handleRecords, 0,& systemDB.conGen.error);
-        if (systemDB.conGen.response != SQLITE_OK)
-        {
-            fprintf(stderr, "\n   |--Error: %s", systemDB.conGen.error);
-            sqlite3_free(systemDB.conGen.error);
-        }
+        if ((systemDB.conGen.response = sqlite3_prepare_v2(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, -1,& systemDB.conGen.query, NULL) )!= SQLITE_OK)
+            std::cerr << "\n   |--Error: " << sqlite3_errmsg(systemDB.conGen.objSQLite);
         else
         {
-            fprintf(stdout, "\n   |--Result: OK.");
+            int a = 1;
+            while ((systemDB.conGen.response = sqlite3_step(systemDB.conGen.query)) == SQLITE_ROW)
+            {
+                // Backups
+                    const unsigned char* id = sqlite3_column_text(systemDB.conGen.query, 0);
+                    //std::cout << "\n   |--" << a++ << "\n";
+                    std::cout << "\n   |--" << id << "\n";
+                    for (int i = 0; i < sqlite3_column_count(systemDB.conGen.query); ++i)
+                    {
+                        std::printf("      |-- %s:",sqlite3_column_name(systemDB.conGen.query, i));
+                        std::printf("%s\n", sqlite3_column_text(systemDB.conGen.query,i));
+                    }
+                // Targets
+
+                // Databases
+
+                // Users
+
+            }
+            std::cout << "\n\n";
+            sqlite3_finalize(systemDB.conGen.query);
         }
 }
 void backups::configureDB()
@@ -452,6 +453,7 @@ bool backups::editRecord()
 }
 bool backups::makeBackup()
 {
+
     return true;
 }
 void backups::db::connection::convertToChar(std::string sql2)

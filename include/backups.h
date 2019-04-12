@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <cstdio>
 #include "sqlite3.h"
 
 class backups
@@ -72,6 +73,7 @@ class backups
                     bool makeEvery(std::string sql2, char* title);
 
                     sqlite3 *objSQLite;
+                    sqlite3_stmt *query;
                     char *error = 0;
                     int response;
                     char *querySQL;

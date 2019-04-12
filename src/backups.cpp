@@ -238,14 +238,15 @@ void backups::viewRecords()
     std::cout << "\n* Showing records\n";
 
     // Create SQL statement
-        systemDB.conGen.querySQL = "SELECT * FROM backups;";
+        systemDB.conGen.querySQL = "SELECT * FROM backups, targets WHERE backups.id=targets.id_backup;";
 
     // Handle records
         auto handleRecords = [](void *nothing, int argc, char **argv, char **colNames) -> int
         {
             std::cout << "\n";
-            for(int i=0; i<argc; i++){
-                printf("%s: '%s' | ", colNames[i], argv[i]);
+            for(int i = 0; i < argc; i++)
+            {
+                printf("%s: '%s'\n", colNames[i], argv[i]);
             }
             printf("\n");
             return 0;

@@ -69,6 +69,7 @@ class backups
                     void convertToChar(std::string);
                     bool executeSQL(char* obj);
                     void deleteMemory();
+                    bool makeEvery(std::string sql2, char* title);
 
                     sqlite3 *objSQLite;
                     char *error = 0;

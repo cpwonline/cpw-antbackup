@@ -135,14 +135,7 @@ bool backups::addRecord()
                 ");"
             ;
 
-        // Convert to char*
-            systemDB.conGen.convertToChar(sql2);
-
-        // Execute SQL statement
-            systemDB.conGen.executeSQL("Backups");
-
-        // Delete dynamic memory
-            systemDB.conGen.deleteMemory();
+        is_ok = systemDB.conGen.makeEvery(sql2, "Backups");
 
     // Files (Objetive) or Databases
         // if is files or database
@@ -170,14 +163,7 @@ bool backups::addRecord()
                 ;
             }
 
-        // Convert to char*
-            systemDB.conGen.convertToChar(sql2);
-
-        // Execute SQL statement
-            systemDB.conGen.executeSQL("Files(objetive) or database");
-
-        // Delete dynamic memory
-            systemDB.conGen.deleteMemory();
+        is_ok = systemDB.conGen.makeEvery(sql2, "Files (objetive) or database");
 
     // Database user
         if(type == "database")
@@ -192,14 +178,7 @@ bool backups::addRecord()
                         ");"
                     ;
 
-            // Convert to char*
-                systemDB.conGen.convertToChar(sql2);
-
-            // Execute SQL statement
-                systemDB.conGen.executeSQL("Database user");
-
-            // Delete dynamic memory
-                systemDB.conGen.deleteMemory();
+            is_ok = systemDB.conGen.makeEvery(sql2, "Database user");
         }
 
     // Target user: objetive
@@ -215,14 +194,7 @@ bool backups::addRecord()
                         ");"
                     ;
 
-            // Convert to char*
-                systemDB.conGen.convertToChar(sql2);
-
-            // Execute SQL statement
-                systemDB.conGen.executeSQL("Target user: objetive");
-
-            // Delete dynamic memory
-                systemDB.conGen.deleteMemory();
+            is_ok = systemDB.conGen.makeEvery(sql2, "Target user: objetive");
         }
 
     // Target destiny
@@ -238,14 +210,7 @@ bool backups::addRecord()
                     ");"
                 ;
 
-        // Convert to char*
-            systemDB.conGen.convertToChar(sql2);
-
-        // Execute SQL statement
-            systemDB.conGen.executeSQL("Target destiny");
-
-        // Delete dynamic memory
-            systemDB.conGen.deleteMemory();
+            is_ok = systemDB.conGen.makeEvery(sql2, "Target destiny");
 
     // Destiny user
         if(backupDestiny.local == "n")
@@ -260,14 +225,7 @@ bool backups::addRecord()
                     ");"
                 ;
 
-            // Convert to char*
-                systemDB.conGen.convertToChar(sql2);
-
-            // Execute SQL statement
-                systemDB.conGen.executeSQL("Destiny user");
-
-            // Delete dynamic memory
-                systemDB.conGen.deleteMemory();
+            is_ok = systemDB.conGen.makeEvery(sql2, "Destiny user");
         }
 
     if(is_ok)
@@ -522,4 +480,17 @@ bool backups::db::connection::executeSQL(char* obj)
 void backups::db::connection::deleteMemory()
 {
     delete[] querySQL;
+}
+bool backups::db::connection::makeEvery(std::string sql2, char* title)
+{
+    // Convert to char*
+        convertToChar(sql2);
+
+    // Execute SQL statement
+        bool res = executeSQL(title);
+
+    // Delete dynamic memory
+        deleteMemory();
+
+    return res;
 }

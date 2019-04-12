@@ -15,6 +15,8 @@ void backups::data()
 	std::cin >> target;
 	std::cout << "\n- Destiny: ";
 	std::cin >> destiny;
+	std::cout << "\n- Type (directory/file/database): ";
+	std::cin >> type;
 	std::cout << "\n- Day: ";
 	std::cin >> dateBackup.day;
 	std::cout << "\n- Month: ";
@@ -40,10 +42,11 @@ bool backups::addRecord()
 
     // Create SQL statement in string type
         std::string sql2;
-        sql2 = "INSERT INTO backups (target, destiny, compression, repeat, datetimeB, dateFreg) "
+        sql2 = "INSERT INTO backups (target, destiny, type, compression, repeat, datetimeB, dateFreg) "
             "VALUES ("
                 "'" + target + "',"
                 "'" + destiny + "',"
+                "'" + type + "',"
                 "'" + compression + "',"
                 "'" + repeat + "',"
                 "'"
@@ -137,6 +140,7 @@ void backups::configureDB()
                 "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
                 "target VARCHAR(3000) NOT NULL,"
                 "destiny VARCHAR(3000) NOT NULL,"
+                "type VARCHAR(10) NOT NULL,"
                 "compression CHAR (1) NOT NULL,"
                 "repeat CHAR (1) NOT NULL,"
                 "datetimeB DATETIME NOT NULL,"
@@ -223,6 +227,7 @@ bool backups::editRecord()
         sql2 = "UPDATE backups SET "
                 "target='" + target + "',"
                 "destiny='" + destiny + "',"
+                "type='" + type + "',"
                 "compression='" + compression + "',"
                 "repeat='" + repeat + "',"
                 "datetimeB='"

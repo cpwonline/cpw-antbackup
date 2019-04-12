@@ -55,8 +55,7 @@ class backups
             connection conGen;
 		};
 
-		std::string target;
-		std::string destiny;
+		std::string target, destiny, type;
 		char compression, repeat;
 		datetime::date dateBackup;
 		datetime::time timeBackup;

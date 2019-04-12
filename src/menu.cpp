@@ -34,7 +34,6 @@ void menu::listItems ()
 
 void menu::handleItems()
 {
-	backups *bakGen = new backups;
 	bakGen->configureDB();
 	switch(currentItem)
 	{
@@ -65,5 +64,21 @@ void menu::handleItems()
             bakGen->restartDB();
             break;
 	}
-	delete bakGen;
+}
+void menu::loop()
+{
+    bakGen = new backups;
+    char answer;
+
+    do
+    {
+        listItems();
+        handleItems();
+
+        std::cout << "\nDo you want to exit? (y/n): ";
+        std::cin >> answer;
+        std::cout << "\n";
+    }while(answer == 'n' || answer == 'N');
+
+    delete bakGen;
 }

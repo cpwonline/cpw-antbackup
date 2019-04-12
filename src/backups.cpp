@@ -17,7 +17,7 @@ void backups::data()
     bool err = false;
     do
     {
-        std::cout << "\n      |-- Backup type (files/database): ";
+        std::cout << "\n      |-- Backup type (0=files/1=database): ";
         std::cin >> type;
         std::cout << "      |-- Title: ";
         std::cin >> title;
@@ -39,7 +39,7 @@ void backups::data()
         std::cout << "      |-- Second: ";
         std::cin >> backupTime.second;
 
-        if(type == "files")
+        if(type == 0)
         {
             std::cout << "   |--Target1: Objetive\n";
             std::cout << "      |-- Local (y/n): ";
@@ -60,7 +60,7 @@ void backups::data()
                 std::cin >> uObj.password;
             }
         }
-        else if(type == "database")
+        else if(type == 1)
         {
             std::cout << "\n   |--Database\n";
             std::cout << "      |-- Name: ";
@@ -119,7 +119,7 @@ bool backups::addRecord()
             std::string sql2;
             sql2 = "INSERT INTO backups (type, title, compression, repeat, timeRun, freg)"
                 " VALUES ("
-                    "'" + type + "',"
+                    "'" + std::to_string(type) + "',"
                     "'" + title + "',"
                     "'" + compression + "',"
                     "'" + repeat + "',"
@@ -139,7 +139,7 @@ bool backups::addRecord()
 
     // Files (Objetive) or Databases
         // if is files or database
-            if(type == "files")
+            if(type == 0)
             {
                 sql2 = "INSERT INTO targets (local, host, options, target, freg, id_backup)"
                     " VALUES ("
@@ -152,7 +152,7 @@ bool backups::addRecord()
                     ");"
                 ;
             }
-            else if(type == "database")
+            else if(type == 1)
             {
                 sql2 = "INSERT INTO databases (name, freg, id_backup) "
                     "VALUES ("
@@ -166,7 +166,7 @@ bool backups::addRecord()
         is_ok = systemDB.conGen.makeEvery(sql2, "Files (objetive) or database");
 
     // Database user
-        if(type == "database")
+        if(type == 1)
         {
             // Create SQL string type statement
                     sql2 = "INSERT INTO users (user, password, freg, id_database) "
@@ -182,7 +182,7 @@ bool backups::addRecord()
         }
 
     // Target user: objetive
-        if(backupObjetive.local == "n" && type == "files")
+        if(backupObjetive.local == "n" && type == 0)
         {
             // Create SQL string type statement
                     sql2 = "INSERT INTO users (user, password, freg, id_target) "
@@ -232,6 +232,47 @@ bool backups::addRecord()
         return true;
     else
         return false;
+}
+void backups::viewDatabases(char* id)
+{
+    std::cout << "      |--Showing targets\n";
+
+    // Conversions
+        char sql[50] = "SELECT * FROM databases WHERE id_backup='";
+        char* sql2 = (char*)id;
+        char* sql3 = (char*)"';";
+        int tamanyo = std::strlen(sql) + std::strlen(sql2) + std::strlen(sql3) + 1;
+
+        systemDB.conGen.querySQL = (char*)std::malloc(tamanyo);
+        std::strcpy(systemDB.conGen.querySQL, sql);
+        std::strcat(systemDB.conGen.querySQL, sql2);
+        std::strcat(systemDB.conGen.querySQL, sql3);
+
+    // Handle the database
+        sqlite3_stmt* query;
+
+        if ((systemDB.conGen.response = sqlite3_prepare_v2(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, -1,& query, NULL) )!= SQLITE_OK)
+            std::cerr << "\n            |--Error: " << sqlite3_errmsg(systemDB.conGen.objSQLite);
+        else
+        {
+            while ((systemDB.conGen.response = sqlite3_step(query)) == SQLITE_ROW)
+            {
+                // Databases
+                    char* id = (char*)sqlite3_column_text(query, 0);
+                    std::cout << "         |--Database " << id << "\n";
+                    for (int i = 1; i < sqlite3_column_count(query); ++i)
+                    {
+                        std::printf("            |-- %s:",sqlite3_column_name(query, i));
+                        std::printf("%s\n", sqlite3_column_text(query,i));
+                    }
+
+                // Users
+
+            }
+            sqlite3_finalize(query);
+        }
+
+    std::free(systemDB.conGen.querySQL);
 }
 void backups::viewTargets(char* id)
 {
@@ -295,11 +336,13 @@ void backups::viewBackups()
                         std::printf("      |-- %s:",sqlite3_column_name(query, i));
                         std::printf("%s\n", sqlite3_column_text(query,i));
                     }
-                // Targets
-                    viewTargets(id);
-
-                // Databases
-
+                    short type = (short)sqlite3_column_int(query, 3);
+                    if(type == 0)
+                        viewTargets(id);
+                    else if(type == 1)
+                        viewDatabases(id);
+                    else
+                        std::cout << "         |-- Error: Type not match. " << type << "\n";
             }
             std::cout << "\n\n";
             sqlite3_finalize(query);
@@ -330,7 +373,7 @@ void backups::configureDB()
         systemDB.conGen.querySQL = "CREATE TABLE IF NOT EXISTS backups ("
                 "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
                 "title VARCHAR(50) NOT NULL,"
-                "type VARCHAR(10) NOT NULL,"
+                "type INTEGER (1) NOT NULL,"
                 "compression CHAR (1) NOT NULL,"
                 "repeat CHAR (1) NOT NULL,"
                 "timeRun DATETIME NOT NULL,"

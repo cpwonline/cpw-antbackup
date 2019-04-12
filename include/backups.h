@@ -89,8 +89,8 @@ class backups
             systemDB;
 
         // Objects
-            short id;
-            std::string type, title;
+            short id, type;
+            std::string title;
             char compression, repeat;
 
             targets backupObjetive;

@@ -51,9 +51,8 @@ void backups::data()
             std::cout << "\n- Objetive: ";
             std::cin >> backupObjetive.target;
 
-            if(backupObjetive.local == 'n')
+            if(backupObjetive.local == "n")
             {
-                users uObj;
                 std::cout << "\n*** User of Target1: Objetive";
                 std::cout << "\n- Username: ";
                 std::cin >> uObj.username;
@@ -63,8 +62,6 @@ void backups::data()
         }
         else if(type == "database")
         {
-            users uDB;
-            databases backupDatabase;
             std::cout << "\n** Database";
             std::cout << "\n- Name: ";
             std::cin >> backupDatabase.name;
@@ -90,9 +87,8 @@ void backups::data()
         std::cout << "\n- Destiny: ";
         std::cin >> backupDestiny.target;
 
-        if(backupDestiny.local == 'n')
+        if(backupDestiny.local == "n")
         {
-            users uDest;
             std::cout << "\n*** User of Target2: Destiny";
             std::cout << "\n- Username: ";
             std::cin >> uDest.username;
@@ -111,21 +107,12 @@ void backups::data()
 
     bool result = option[next];*/
 }
+
 bool backups::addRecord()
 {
     std::cout << "\n* Adding a record\n";
 
     bool is_ok = false;
-
-
-    // Handle records
-        //std::string lastID = std::string;
-        auto viewLastID = [](void *nada, int argc, char **argv, char **colNames) -> int
-        {
-            std::cout << "\nEl ultimo id es: " << argv[0] << "\n";
-            //sprintf(lastID, argv[0]);
-            return 0;
-        };
 
     // Backups
         // Create SQL string type statement
@@ -165,68 +152,40 @@ bool backups::addRecord()
             }
             else
             {
-                fprintf(stdout, "--Ready--\n");
+                fprintf(stdout, "--Ready 1--\n");
                 is_ok = true;
             }
 
         // Delete dynamic memory
             delete[] systemDB.conGen.querySQL;
 
-        // Query the last ID
-            // Create SQL statement
-                systemDB.conGen.querySQL = "SELECT id FROM backups ORDER BY id DESC LIMIT 1;";
-
-            // Execute SQL statement
-                sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, viewLastID, 0,& systemDB.conGen.error);
-
-
-
     // Targets or Databases
-        /*if(type == "files")
-        {
-            sql2 = "INSERT INTO targets (local, host, options, target, freg, id_backup)"
-                " VALUES ("
-                    + backupObjetive.local + ","
-                    + backupObjetive.host + ","
-                    + backupObjetive.options + ","
-                    + backupObjetive.target + ","
-                    "DATETIME(STRFTIME('%s','now'), 'unixepoch'),"
-                    + last
-                ");"
-            ;
-
-            if(backupObjetive.local == 'n')
+        // if is files or database
+            if(type == "files")
             {
-                sql2 = sql2 + uObj.username + ",";
-                    + uObj.password + ","
+                sql2 = "INSERT INTO targets (local, host, options, target, freg, id_backup)"
+                    " VALUES ("
+                        "'" + backupObjetive.local + "',"
+                        "'" + backupObjetive.host + "',"
+                        "'" + backupObjetive.options + "',"
+                        "'" + backupObjetive.target + "',"
+                        "DATETIME(STRFTIME('%s','now'), 'unixepoch'),"
+                        "(SELECT MAX(id) FROM backups)"
+                    ");"
                 ;
             }
-        }
-        else if(type == "database")
-        {
-            sql2 = sql2 + backupDatabase.name + ","
-            sql2 = sql2 + uDB.username + ","
-            sql2 = sql2 + uDB.password + ","
-        }
-        // Create SQL string type statement
-            std::string sql2;
-            sql2 = "INSERT INTO backups (type, title, compression, repeat, timeRun, freg)"
-                " VALUES ("
-                    "'" + type + "',"
-                    "'" + title + "',"
-                    "'" + compression + "',"
-                    "'" + repeat + "',"
-                    "'"
-                        + std::to_string(backupDate.day) + "-"
-                        + std::to_string(backupDate.month) + "-"
-                        + std::to_string(backupDate.year) + " "
-                        + std::to_string(backupTime.hour) + ":"
-                        + std::to_string(backupTime.minute) + ":"
-                        + std::to_string(backupTime.second) +
-                    "', "
-                    "DATETIME(STRFTIME('%s','now'), 'unixepoch')"
-                ");"
-            ;
+            else if(type == "database")
+            {
+                sql2 = "INSERT INTO databases (name, freg, id_backup) "
+                    "VALUES ("
+                        "'" + backupDatabase.name + ","
+                        "DATETIME(STRFTIME('%s','now'), 'unixepoch'),"
+                        "(SELECT MAX(id) FROM backups)"
+                    ");"
+                ;
+            }
+
+            std::cout << "\nLa consulta es: " << sql2 << "\n";
 
         // Convert to char*
             systemDB.conGen.querySQL = new char[sql2.length()];
@@ -245,15 +204,24 @@ bool backups::addRecord()
             }
             else
             {
-                fprintf(stdout, "--Ready--\n");
+                fprintf(stdout, "--Ready 2--\n");
                 is_ok = true;
             }
 
+        // Delete dynamic memory
+            delete[] systemDB.conGen.querySQL;
 
-
-
-            */
             /*
+
+                + uDB.username + ","
+                + uDB.password + ","
+
+            if(backupObjetive.local == 'n')
+            {
+                sql2 = sql2 + uObj.username + ",";
+                    + uObj.password + ","
+                ;
+            }
 
         sql2 = sql2 + backupDestiny.local + ","
             + backupDestiny.host + ","
@@ -398,6 +366,7 @@ bool backups::restartDB()
         }
 
     configureDB();
+    return true;
 }
 bool backups::deleteRecord()
 {
@@ -430,6 +399,7 @@ bool backups::deleteRecord()
 
     // Close and delete
         delete[] systemDB.conGen.querySQL;
+        return true;
 }
 bool backups::editRecord()
 {
@@ -493,5 +463,5 @@ bool backups::editRecord()
 }
 bool backups::makeBackup()
 {
-
+    return true;
 }

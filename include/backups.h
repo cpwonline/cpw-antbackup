@@ -26,8 +26,7 @@ class backups
             struct targets
             {
                 short id;
-                std::string target, host, options;
-                char local;
+                std::string target, host, options, local;
             };
 
             struct users
@@ -87,6 +86,12 @@ class backups
             targets backupDestiny;
             datetime::date backupDate;
             datetime::time backupTime;
+
+            users uObj;
+            users uDB;
+            databases backupDatabase;
+            users uDest;
+
 };
 
 #endif // _BACKUPS_H_

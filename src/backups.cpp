@@ -1,5 +1,13 @@
 #include "backups.h"
 
+backups::backups()
+{
+    //
+}
+backups::~backups()
+{
+    //
+}
 void backups::data()
 {
 	std::cout << "\n\nGeneral";
@@ -28,22 +36,8 @@ bool backups::addRecord()
 {
     std::cout << "\nAdding a record\n";
 
-    sqlite3 *db;
-    char *error = 0;
-    int res;
-    char *sql;
     bool is_ok = false;
-    // Open database
-        res = sqlite3_open(nameDB, &db);
-        if (res)
-        {
-            fprintf(stderr, "Error to open database: %s\n", sqlite3_errmsg(db));
-            exit(0);
-        }
-        else
-        {
-            fprintf(stderr, "Database OK\n");
-        }
+
     // Create SQL statement in string type
         std::string sql2;
         sql2 = "INSERT INTO backups (target, destiny, compression, repeat, datetimeB, dateFreg) "
@@ -67,19 +61,19 @@ bool backups::addRecord()
         std::cout << "\n SQL2 = " << sql2 << ", size: " << sql2.length() << "\n";
 
     // Convert to char*
-        sql = new char[sql2.length()];
+        genDB.conGen.querySQL = new char[sql2.length()];
         for(int a = 0; a < sql2.length(); a++)
         {
-            sql[a] = sql2[a];
+            genDB.conGen.querySQL[a] = sql2[a];
         }
-        std::cout << "\n SQL = " << sql << "\n";
+        std::cout << "\n SQL = " << genDB.conGen.querySQL << "\n";
 
     // Execute SQL statement
-        res = sqlite3_exec(db, sql, NULL, 0, &error);
-        if (res != SQLITE_OK)
+        genDB.conGen.response = sqlite3_exec(genDB.conGen.objSQLite, genDB.conGen.querySQL, NULL, 0, & genDB.conGen.error);
+        if (genDB.conGen.response != SQLITE_OK)
         {
-            fprintf(stderr, "Error: %s\n", error);
-            sqlite3_free(error);
+            fprintf(stderr, "Error: %s\n", genDB.conGen.error);
+            sqlite3_free(genDB.conGen.error);
             is_ok = false;
         }
         else
@@ -88,9 +82,7 @@ bool backups::addRecord()
             is_ok = true;
         }
 
-    sqlite3_close(db);
-
-    delete[] sql;
+    delete[] genDB.conGen.querySQL;
 
     if(is_ok)
         return true;
@@ -100,27 +92,11 @@ bool backups::addRecord()
 void backups::viewRecords()
 {
     std::cout << "\n* Showing records\n";
-    sqlite3 *db;
-    char *error = 0;
-    int res;
-    char *sql;
-
-    // Open database
-        res = sqlite3_open(nameDB, &db);
-        if (res)
-        {
-            fprintf(stderr, "Error to open database: %s\n", sqlite3_errmsg(db));
-            exit(0);
-        }
-        else
-        {
-            fprintf(stderr, "Database OK\n");
-        }
 
     // Create SQL statement
-        sql = "SELECT * FROM backups;";
+        genDB.conGen.querySQL = "SELECT * FROM backups;";
 
-    // Lambda function
+    // Handle records
         auto handleRecords = [](void *nada, int argc, char **argv, char **colNames) -> int
         {
             std::cout << "\n";
@@ -132,40 +108,35 @@ void backups::viewRecords()
         };
 
     // Execute SQL statement
-        res = sqlite3_exec(db, sql, handleRecords, 0, &error);
-        if (res != SQLITE_OK)
+        genDB.conGen.response = sqlite3_exec(genDB.conGen.objSQLite, genDB.conGen.querySQL, handleRecords, 0,& genDB.conGen.error);
+        if (genDB.conGen.response != SQLITE_OK)
         {
-            fprintf(stderr, "--Error--: %s\n", error);
-            sqlite3_free(error);
+            fprintf(stderr, "--Error--: %s\n", genDB.conGen.error);
+            sqlite3_free(genDB.conGen.error);
         }
         else
         {
             fprintf(stdout, "--Ready--. \n");
         }
-
-        sqlite3_close(db);
 }
 void backups::configureDB()
 {
-    // Setting up
-        std::cout << "\n* Setting up database.\n";
-        sqlite3 *db;
-        char *error = 0;
-        int res;
-        char *sql;
+    std::cout << "\n* Setting up database.\n";
+    genDB.conGen.error = 0;
 
-        res = sqlite3_open(nameDB, &db);
-        if (res)
+    // Open database
+        genDB.conGen.response = sqlite3_open(genDB.infoGen.nameDB,& genDB.conGen.objSQLite);
+        if (genDB.conGen.response)
         {
-            fprintf(stderr, "Error to open database: %s\n", sqlite3_errmsg(db));
+            fprintf(stderr, "Error to open database: %s\n", sqlite3_errmsg(genDB.conGen.objSQLite));
             exit(0);
         }
         else
         {
-            fprintf(stderr, "Databse is OK\n");
+            fprintf(stderr, "Database OK\n");
         }
-    // Query
-        sql = "CREATE TABLE backups ("
+    // SQL Query
+        genDB.conGen.querySQL = "CREATE TABLE backups ("
                 "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
                 "target VARCHAR(3000) NOT NULL,"
                 "destiny VARCHAR(3000) NOT NULL,"
@@ -177,77 +148,40 @@ void backups::configureDB()
         ;
 
     // Execute SQL statement
-        res = sqlite3_exec(db, sql, NULL, 0, &error);
-        if (res != SQLITE_OK)
+        genDB.conGen.response = sqlite3_exec(genDB.conGen.objSQLite, genDB.conGen.querySQL, NULL, 0,& genDB.conGen.error);
+        if (genDB.conGen.response != SQLITE_OK)
         {
-            fprintf(stderr, "Error: %s\n", error);
-            sqlite3_free(error);
+            fprintf(stderr, "Error: %s\n", genDB.conGen.error);
+            sqlite3_free(genDB.conGen.error);
         }
         else
         {
             fprintf(stdout, "Database and table created.\n");
         }
-
-    sqlite3_close(db);
 }
 bool backups::restartDB()
 {
-    // Setting up
-        std::cout << "\n* Restart database.\n";
-        sqlite3 *db;
-        char *error = 0;
-        int res;
-        char *sql;
+    std::cout << "\n* Restart database.\n";
 
-        res = sqlite3_open(nameDB, &db);
-        if (res)
-        {
-            fprintf(stderr, "Error to open database: %s\n", sqlite3_errmsg(db));
-            exit(0);
-        }
-        else
-        {
-            fprintf(stderr, "Database is OK\n");
-        }
     // Query
-        sql = "DROP TABLE backups;";
+        genDB.conGen.querySQL = "DROP TABLE backups;";
 
     // Execute SQL statement
-        res = sqlite3_exec(db, sql, NULL, 0, &error);
-        if (res != SQLITE_OK)
+        genDB.conGen.response = sqlite3_exec(genDB.conGen.objSQLite, genDB.conGen.querySQL, NULL, 0,& genDB.conGen.error);
+        if (genDB.conGen.response != SQLITE_OK)
         {
-            fprintf(stderr, "Error: %s\n", error);
-            sqlite3_free(error);
+            fprintf(stderr, "Error: %s\n", genDB.conGen.error);
+            sqlite3_free(genDB.conGen.error);
         }
         else
         {
             fprintf(stdout, "Backups table was deleted.\n");
         }
 
-    sqlite3_close(db);
-
     configureDB();
 }
 bool backups::deleteRecord()
 {
-
-    // Setting up
-        std::cout << "\n* Delete a record.\n";
-        sqlite3 *db;
-        char *error = 0;
-        int res;
-        char *sql;
-
-        res = sqlite3_open(nameDB, &db);
-        if (res)
-        {
-            fprintf(stderr, "Error to open database: %s\n", sqlite3_errmsg(db));
-            exit(0);
-        }
-        else
-        {
-            fprintf(stderr, "Database is OK\n");
-        }
     // Data user
         std::string id;
         std::cout << "Record ID to delete: ";
@@ -257,18 +191,18 @@ bool backups::deleteRecord()
         std::string toString = "DELETE FROM backups WHERE id ='" + id + "';";
         std::cout << "\ntoString: " << toString << ", size: " << toString.length() << "\n";
         // To char
-            sql = new char[toString.length()];
+            genDB.conGen.querySQL = new char[toString.length()];
             for(int a = 0; a < toString.length(); a++)
-                sql[a] = toString[a];
+                genDB.conGen.querySQL[a] = toString[a];
 
-        std::cout << "\nSQL: " << sql << ", size: " << toString.length() << "\n";
+        std::cout << "\nSQL: " << genDB.conGen.querySQL << ", size: " << toString.length() << "\n";
 
     // Execute SQL statement
-        res = sqlite3_exec(db, sql, NULL, 0, &error);
-        if (res != SQLITE_OK)
+        genDB.conGen.response = sqlite3_exec(genDB.conGen.objSQLite, genDB.conGen.querySQL, NULL, 0,& genDB.conGen.error);
+        if (genDB.conGen.response != SQLITE_OK)
         {
-            fprintf(stderr, "Error: %s\n", error);
-            sqlite3_free(error);
+            fprintf(stderr, "Error: %s\n", genDB.conGen.error);
+            sqlite3_free(genDB.conGen.error);
         }
         else
         {
@@ -276,29 +210,13 @@ bool backups::deleteRecord()
         }
 
     // Close and delete
-        delete[] sql;
-        sqlite3_close(db);
+        delete[] genDB.conGen.querySQL;
 }
 bool backups::editRecord()
 {
     std::cout << "\nEditing a record\n";
 
-    sqlite3 *db;
-    char *error = 0;
-    int res;
-    char *sql;
     bool is_ok = false;
-    // Open database
-        res = sqlite3_open(nameDB, &db);
-        if (res)
-        {
-            fprintf(stderr, "Error to open database: %s\n", sqlite3_errmsg(db));
-            exit(0);
-        }
-        else
-        {
-            fprintf(stderr, "Database OK\n");
-        }
     // Create SQL statement in string type
         std::string id;
         std::cout << "\nRecord ID: ";
@@ -326,19 +244,19 @@ bool backups::editRecord()
         std::cout << "\n SQL2 = " << sql2 << ", size: " << sql2.length() << "\n";
 
     // Convert to char*
-        sql = new char[sql2.length()];
+        genDB.conGen.querySQL = new char[sql2.length()];
         for(int a = 0; a < sql2.length(); a++)
         {
-            sql[a] = sql2[a];
+            genDB.conGen.querySQL[a] = sql2[a];
         }
-        std::cout << "\n SQL = " << sql << "\n";
+        std::cout << "\n SQL = " << genDB.conGen.querySQL << "\n";
 
     // Execute SQL statement
-        res = sqlite3_exec(db, sql, NULL, 0, &error);
-        if (res != SQLITE_OK)
+        genDB.conGen.response = sqlite3_exec(genDB.conGen.objSQLite, genDB.conGen.querySQL, NULL, 0,& genDB.conGen.error);
+        if (genDB.conGen.response != SQLITE_OK)
         {
-            fprintf(stderr, "Error: %s\n", error);
-            sqlite3_free(error);
+            fprintf(stderr, "Error: %s\n", genDB.conGen.error);
+            sqlite3_free(genDB.conGen.error);
             is_ok = false;
         }
         else
@@ -347,9 +265,7 @@ bool backups::editRecord()
             is_ok = true;
         }
 
-    sqlite3_close(db);
-
-    delete[] sql;
+    delete[] genDB.conGen.querySQL;
 
     if(is_ok)
         return true;

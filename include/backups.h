@@ -9,7 +9,8 @@
 class backups
 {
 	public:
-        backups() : nameDB("cpw_antbackup.db"){}
+        backups();
+        ~backups();
 		void data();
 		bool addRecord();
 		void viewRecords();
@@ -28,12 +29,34 @@ class backups
 		{
 			short day, month, year;
 		};
+		struct database
+		{
+            struct info
+            {
+                info() : nameDB("cpw_antbackup.db"){}
+                const char* nameDB;
+            };
+            struct connection
+            {
+                ~connection()
+                {
+                    sqlite3_close(objSQLite);
+                }
+                sqlite3 *objSQLite;
+                char *error = 0;
+                int response;
+                char *querySQL;
+            };
+
+            info infoGen;
+            connection conGen;
+		};
 		std::string target;
 		std::string destiny;
 		char compression, repeat;
 		time timeBackup;
 		date dateBackup;
-		const char* nameDB;
+		database genDB;
 };
 
 #endif // _BACKUPS_H_

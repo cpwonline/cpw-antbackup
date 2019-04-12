@@ -233,38 +233,82 @@ bool backups::addRecord()
     else
         return false;
 }
-void backups::viewRecords()
+void backups::viewTargets(char* id)
 {
-    std::cout << "\n|--Showing records";
+    std::cout << "      |--Showing targets\n";
 
-        systemDB.conGen.querySQL = "SELECT * FROM backups;";
+    // Conversions
+        char sql[50] = "SELECT * FROM targets WHERE id_backup='";
+        char* sql2 = (char*)id;
+        char* sql3 = (char*)"';";
+        int tamanyo = std::strlen(sql) + std::strlen(sql2) + std::strlen(sql3) + 1;
 
-        if ((systemDB.conGen.response = sqlite3_prepare_v2(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, -1,& systemDB.conGen.query, NULL) )!= SQLITE_OK)
-            std::cerr << "\n   |--Error: " << sqlite3_errmsg(systemDB.conGen.objSQLite);
+        systemDB.conGen.querySQL = (char*)std::malloc(tamanyo);
+        std::strcpy(systemDB.conGen.querySQL, sql);
+        std::strcat(systemDB.conGen.querySQL, sql2);
+        std::strcat(systemDB.conGen.querySQL, sql3);
+
+    // Handle the database
+        sqlite3_stmt* query;
+
+        if ((systemDB.conGen.response = sqlite3_prepare_v2(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, -1,& query, NULL) )!= SQLITE_OK)
+            std::cerr << "\n            |--Error: " << sqlite3_errmsg(systemDB.conGen.objSQLite);
         else
         {
-            int a = 1;
-            while ((systemDB.conGen.response = sqlite3_step(systemDB.conGen.query)) == SQLITE_ROW)
+            while ((systemDB.conGen.response = sqlite3_step(query)) == SQLITE_ROW)
             {
-                // Backups
-                    const unsigned char* id = sqlite3_column_text(systemDB.conGen.query, 0);
-                    //std::cout << "\n   |--" << a++ << "\n";
-                    std::cout << "\n   |--" << id << "\n";
-                    for (int i = 0; i < sqlite3_column_count(systemDB.conGen.query); ++i)
-                    {
-                        std::printf("      |-- %s:",sqlite3_column_name(systemDB.conGen.query, i));
-                        std::printf("%s\n", sqlite3_column_text(systemDB.conGen.query,i));
-                    }
                 // Targets
-
-                // Databases
+                    char* id = (char*)sqlite3_column_text(query, 0);
+                    std::cout << "         |--Target " << id << "\n";
+                    for (int i = 1; i < sqlite3_column_count(query); ++i)
+                    {
+                        std::printf("            |-- %s:",sqlite3_column_name(query, i));
+                        std::printf("%s\n", sqlite3_column_text(query,i));
+                    }
 
                 // Users
 
             }
-            std::cout << "\n\n";
-            sqlite3_finalize(systemDB.conGen.query);
+            sqlite3_finalize(query);
         }
+
+    std::free(systemDB.conGen.querySQL);
+}
+void backups::viewBackups()
+{
+    std::cout << "\n   |--Showing backups\n";
+
+        systemDB.conGen.querySQL = (char*)"SELECT * FROM backups;";
+        sqlite3_stmt* query;
+
+        if ((systemDB.conGen.response = sqlite3_prepare_v2(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, -1,& query, NULL) )!= SQLITE_OK)
+            std::cerr << "\n      |--Error: " << sqlite3_errmsg(systemDB.conGen.objSQLite);
+        else
+        {
+            while ((systemDB.conGen.response = sqlite3_step(query)) == SQLITE_ROW)
+            {
+                // Backups
+                    char* id = (char*)sqlite3_column_text(query, 0);
+                    std::cout << "   |-- Backup " << id << "\n";
+                    for (int i = 1; i < sqlite3_column_count(query); ++i)
+                    {
+                        std::printf("      |-- %s:",sqlite3_column_name(query, i));
+                        std::printf("%s\n", sqlite3_column_text(query,i));
+                    }
+                // Targets
+                    viewTargets(id);
+
+                // Databases
+
+            }
+            std::cout << "\n\n";
+            sqlite3_finalize(query);
+        }
+}
+void backups::viewRecords()
+{
+    std::cout << "\n|--Showing records";
+    viewBackups();
 }
 void backups::configureDB()
 {

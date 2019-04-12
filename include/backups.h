@@ -3,7 +3,8 @@
 
 #include <iostream>
 #include <string>
-#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include "sqlite3.h"
 
 class backups
@@ -13,6 +14,10 @@ class backups
         ~backups();
 		void data();
 		bool addRecord();
+		void viewBackups();
+		void viewTargets(char* id);
+		void viewDatabases(char* id);
+		void viewUsers(char* id);
 		void viewRecords();
 		bool deleteRecord();
 		bool editRecord();
@@ -72,11 +77,10 @@ class backups
                     void deleteMemory();
                     bool makeEvery(std::string sql2, char* title);
 
-                    sqlite3 *objSQLite;
-                    sqlite3_stmt *query;
-                    char *error = 0;
+                    sqlite3* objSQLite;
+                    char* error = 0;
                     int response;
-                    char *querySQL;
+                    char* querySQL;
                 };
 
                 info infoGen;

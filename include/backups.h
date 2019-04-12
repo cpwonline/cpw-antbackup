@@ -14,6 +14,7 @@ class backups
 		bool addRecord();
 		void viewRecords();
 		bool deleteRecord();
+		bool editRecord();
 		void configureDB();
 		bool restartDB();
 	protected:

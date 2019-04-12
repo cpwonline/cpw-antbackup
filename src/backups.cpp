@@ -277,3 +277,80 @@ bool backups::deleteRecord()
         delete[] sql;
         sqlite3_close(db);
 }
+bool backups::editRecord()
+{
+    std::cout << "\nEditing a record\n";
+
+    sqlite3 *db;
+    char *error = 0;
+    int res;
+    char *sql;
+    bool is_ok = false;
+    // Open database
+        res = sqlite3_open(nameDB, &db);
+        if (res)
+        {
+            fprintf(stderr, "Error to open database: %s\n", sqlite3_errmsg(db));
+            exit(0);
+        }
+        else
+        {
+            fprintf(stderr, "Database OK\n");
+        }
+    // Create SQL statement in string type
+        std::string id;
+        std::cout << "\nRecord ID: ";
+        std::cin >> id;
+
+        std::string sql2;
+        sql2 = "UPDATE backups SET "
+                "target='" + target + "',"
+                "destiny='" + destiny + "',"
+                "compression='" + compression + "',"
+                "repeat='" + repeat + "',"
+                "datetimeB='"
+                    + std::to_string(dateBackup.day) + "-"
+                    + std::to_string(dateBackup.month) + "-"
+                    + std::to_string(dateBackup.year) + " "
+                    + std::to_string(timeBackup.hour) + ":"
+                    + std::to_string(timeBackup.minute) + ":"
+                    + std::to_string(timeBackup.second) +
+                "',"
+                "dateFreg=DATETIME(STRFTIME('%s','now'), 'unixepoch') "
+                "WHERE id='" + id + "'"
+            ";"
+        ;
+
+        std::cout << "\n SQL2 = " << sql2 << ", size: " << sql2.length() << "\n";
+
+    // Convert to char*
+        sql = new char[sql2.length()];
+        for(int a = 0; a < sql2.length(); a++)
+        {
+            sql[a] = sql2[a];
+        }
+        std::cout << "\n SQL = " << sql << "\n";
+
+    // Execute SQL statement
+        res = sqlite3_exec(db, sql, NULL, 0, &error);
+        if (res != SQLITE_OK)
+        {
+            fprintf(stderr, "Error: %s\n", error);
+            sqlite3_free(error);
+            is_ok = false;
+        }
+        else
+        {
+            fprintf(stdout, "Ready\n");
+            is_ok = true;
+        }
+
+    sqlite3_close(db);
+
+    delete[] sql;
+
+    if(is_ok)
+        return true;
+    else
+        return false;
+}

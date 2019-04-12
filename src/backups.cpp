@@ -42,7 +42,7 @@ void backups::data()
         if(type == 0)
         {
             std::cout << "   |--Target1: Objetive\n";
-            std::cout << "      |-- Local (y/n): ";
+            std::cout << "      |-- Local (1=yes/0=no): ";
             std::cin >> backupObjetive.local;
             std::cout << "      |-- Host: ";
             std::cin >> backupObjetive.host;
@@ -51,7 +51,7 @@ void backups::data()
             std::cout << "      |-- Objetive: ";
             std::cin >> backupObjetive.target;
 
-            if(backupObjetive.local == "n")
+            if(backupObjetive.local == 0)
             {
                 std::cout << "      |--User of Target1: Objetive\n";
                 std::cout << "         |-- Username: ";
@@ -78,7 +78,7 @@ void backups::data()
         }
 
         std::cout << "   |--Target2: Destiny\n";
-        std::cout << "      |-- Local (y/n): ";
+        std::cout << "      |-- Local (1=yes/0=no): ";
         std::cin >> backupDestiny.local;
         std::cout << "      |-- Host: ";
         std::cin >> backupDestiny.host;
@@ -87,7 +87,7 @@ void backups::data()
         std::cout << "      |-- Destiny: ";
         std::cin >> backupDestiny.target;
 
-        if(backupDestiny.local == "n")
+        if(backupDestiny.local == 0)
         {
             std::cout << "      |--User of Target2: Destiny\n";
             std::cout << "         |-- Username: ";
@@ -143,7 +143,7 @@ bool backups::addRecord()
             {
                 sql2 = "INSERT INTO targets (local, host, options, target, freg, id_backup)"
                     " VALUES ("
-                        "'" + backupObjetive.local + "',"
+                        "'" + std::to_string(backupObjetive.local) + "',"
                         "'" + backupObjetive.host + "',"
                         "'" + backupObjetive.options + "',"
                         "'" + backupObjetive.target + "',"
@@ -169,12 +169,13 @@ bool backups::addRecord()
         if(type == 1)
         {
             // Create SQL string type statement
-                    sql2 = "INSERT INTO users (user, password, freg, id_database) "
+                    sql2 = "INSERT INTO users (user, password, freg, id_database, id_backup) "
                         "VALUES ("
                             "'" + uDB.username + "',"
                             "'" + uDB.password + "',"
                             "DATETIME(STRFTIME('%s','now'), 'unixepoch'),"
-                            "(SELECT MAX(id) FROM databases)"
+                            "(SELECT MAX(id) FROM databases),"
+                            "'-1'"
                         ");"
                     ;
 
@@ -182,15 +183,16 @@ bool backups::addRecord()
         }
 
     // Target user: objetive
-        if(backupObjetive.local == "n" && type == 0)
+        if(backupObjetive.local == 0 && type == 0)
         {
             // Create SQL string type statement
-                    sql2 = "INSERT INTO users (user, password, freg, id_target) "
+                    sql2 = "INSERT INTO users (user, password, freg, id_target, id_database) "
                         "VALUES ("
                             "'" + uObj.username + "',"
                             "'" + uObj.password + "',"
                             "DATETIME(STRFTIME('%s','now'), 'unixepoch'),"
-                            "(SELECT MAX(id) FROM targets)"
+                            "(SELECT MAX(id) FROM targets),"
+                            "'-1'"
                         ");"
                     ;
 
@@ -201,7 +203,7 @@ bool backups::addRecord()
         // SQL String
                 sql2 = "INSERT INTO targets (local, host, options, target, freg, id_backup)"
                     " VALUES ("
-                        "'" + backupDestiny.local + "',"
+                        "'" + std::to_string(backupDestiny.local) + "',"
                         "'" + backupDestiny.host + "',"
                         "'" + backupDestiny.options + "',"
                         "'" + backupDestiny.target + "',"
@@ -213,15 +215,16 @@ bool backups::addRecord()
             is_ok = systemDB.conGen.makeEvery(sql2, "Target destiny");
 
     // Destiny user
-        if(backupDestiny.local == "n")
+        if(backupDestiny.local == 0)
         {
             // Create SQL string type statement
-                sql2 = "INSERT INTO users (user, password, freg, id_target) "
+                sql2 = "INSERT INTO users (user, password, freg, id_target, id_database) "
                     "VALUES ("
                         "'" + uDest.username + "',"
                         "'" + uDest.password + "',"
                         "DATETIME(STRFTIME('%s','now'), 'unixepoch'),"
-                        "(SELECT MAX(id) FROM targets)"
+                        "(SELECT MAX(id) FROM targets),"
+                        "'-1'"
                     ");"
                 ;
 
@@ -233,9 +236,53 @@ bool backups::addRecord()
     else
         return false;
 }
+void backups::viewUsers(char* id)
+{
+
+    std::cout << "            |--Showing users\n";
+
+    // Conversions
+        char sql[50] = "SELECT * FROM users WHERE id_target='";
+        char* sql2 = (char*)id;
+        char* sql3 = (char*)"' OR id_database='";
+        char* sql4 = (char*)"';";
+        int tamanyo = std::strlen(sql) + std::strlen(sql3) + std::strlen(sql4) + 1;
+        tamanyo += std::strlen(sql2) + std::strlen(sql2);
+
+        systemDB.conGen.querySQL = (char*)std::malloc(tamanyo);
+        std::strcpy(systemDB.conGen.querySQL, sql);
+        std::strcat(systemDB.conGen.querySQL, sql2);
+        std::strcat(systemDB.conGen.querySQL, sql3);
+        std::strcat(systemDB.conGen.querySQL, sql2);
+        std::strcat(systemDB.conGen.querySQL, sql4);
+
+    // Handle the database
+        sqlite3_stmt* query;
+
+        if ((systemDB.conGen.response = sqlite3_prepare_v2(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, -1,& query, NULL) )!= SQLITE_OK)
+        {
+            std::cerr << "\n                  |--Error: " << sqlite3_errmsg(systemDB.conGen.objSQLite);
+            std::free(systemDB.conGen.querySQL);
+        }
+        else
+        {
+            while ((systemDB.conGen.response = sqlite3_step(query)) == SQLITE_ROW)
+            {
+                // Users
+                    char* id = (char*)sqlite3_column_text(query, 0);
+                    std::cout << "               |--User " << id << "\n";
+                    for (int i = 1; i < sqlite3_column_count(query); ++i)
+                    {
+                        std::printf("                  |-- %s:",sqlite3_column_name(query, i));
+                        std::printf("%s\n", sqlite3_column_text(query,i));
+                    }
+            }
+            sqlite3_finalize(query);
+        }
+}
 void backups::viewDatabases(char* id)
 {
-    std::cout << "      |--Showing targets\n";
+    std::cout << "      |--Showing databases\n";
 
     // Conversions
         char sql[50] = "SELECT * FROM databases WHERE id_backup='";
@@ -252,9 +299,13 @@ void backups::viewDatabases(char* id)
         sqlite3_stmt* query;
 
         if ((systemDB.conGen.response = sqlite3_prepare_v2(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, -1,& query, NULL) )!= SQLITE_OK)
+        {
             std::cerr << "\n            |--Error: " << sqlite3_errmsg(systemDB.conGen.objSQLite);
+            std::free(systemDB.conGen.querySQL);
+        }
         else
         {
+            std::free(systemDB.conGen.querySQL);
             while ((systemDB.conGen.response = sqlite3_step(query)) == SQLITE_ROW)
             {
                 // Databases
@@ -267,12 +318,11 @@ void backups::viewDatabases(char* id)
                     }
 
                 // Users
+                    viewUsers(id);
 
             }
             sqlite3_finalize(query);
         }
-
-    std::free(systemDB.conGen.querySQL);
 }
 void backups::viewTargets(char* id)
 {
@@ -293,9 +343,13 @@ void backups::viewTargets(char* id)
         sqlite3_stmt* query;
 
         if ((systemDB.conGen.response = sqlite3_prepare_v2(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, -1,& query, NULL) )!= SQLITE_OK)
+        {
             std::cerr << "\n            |--Error: " << sqlite3_errmsg(systemDB.conGen.objSQLite);
+            std::free(systemDB.conGen.querySQL);
+        }
         else
         {
+            std::free(systemDB.conGen.querySQL);
             while ((systemDB.conGen.response = sqlite3_step(query)) == SQLITE_ROW)
             {
                 // Targets
@@ -308,12 +362,16 @@ void backups::viewTargets(char* id)
                     }
 
                 // Users
+                    short local = (short)sqlite3_column_int(query, 2);
+                    if(local == 0)
+                        viewUsers(id);
+                    else
+                        std::cout << "-- es local " << local << "\n";
 
             }
             sqlite3_finalize(query);
         }
 
-    std::free(systemDB.conGen.querySQL);
 }
 void backups::viewBackups()
 {
@@ -336,11 +394,16 @@ void backups::viewBackups()
                         std::printf("      |-- %s:",sqlite3_column_name(query, i));
                         std::printf("%s\n", sqlite3_column_text(query,i));
                     }
-                    short type = (short)sqlite3_column_int(query, 3);
+                // Targets and Databases
+                    short type = (short)sqlite3_column_int(query, 2);
+                    std::cout << "         |-- Es tipo. " << type << "\n";
                     if(type == 0)
                         viewTargets(id);
                     else if(type == 1)
+                    {
                         viewDatabases(id);
+                        viewTargets(id);
+                    }
                     else
                         std::cout << "         |-- Error: Type not match. " << type << "\n";
             }

@@ -32,7 +32,8 @@ class backups
             struct targets
             {
                 short id;
-                std::string target, host, options, local;
+                std::string target, host, options;
+                short local;
             };
 
             struct users

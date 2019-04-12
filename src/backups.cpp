@@ -11,93 +11,93 @@ backups::~backups()
 void backups::data()
 {
 
-	std::cout << "\n\n* Recolecting data";
-	std::cout << "\n** General";
+	std::cout << "\n|--Recolecting data";
+	std::cout << "\n   |--General";
 
     bool err = false;
     do
     {
-        std::cout << "\n- Backup type (files/database): ";
+        std::cout << "\n      |-- Backup type (files/database): ";
         std::cin >> type;
-        std::cout << "\n- Title: ";
+        std::cout << "      |-- Title: ";
         std::cin >> title;
-        std::cout << "\n- Compression (y/n): ";
+        std::cout << "      |-- Compression (y/n): ";
         std::cin >> compression;
-        std::cout << "\n- Repeat (y/n): ";
+        std::cout << "      |-- Repeat (y/n): ";
         std::cin >> repeat;
-        std::cout << "\n** Datetime run";
-        std::cout << "\n- Day: ";
+        std::cout << "   |--Datetime run\n";
+        std::cout << "      |-- Day: ";
         std::cin >> backupDate.day;
-        std::cout << "\n- Month: ";
+        std::cout << "      |-- Month: ";
         std::cin >> backupDate.month;
-        std::cout << "\n- Year: ";
+        std::cout << "      |-- Year: ";
         std::cin >> backupDate.year;
-        std::cout << "\n- Hour: ";
+        std::cout << "      |-- Hour: ";
         std::cin >> backupTime.hour;
-        std::cout << "\n- Minute: ";
+        std::cout << "      |-- Minute: ";
         std::cin >> backupTime.minute;
-        std::cout << "\n- Second: ";
+        std::cout << "      |-- Second: ";
         std::cin >> backupTime.second;
 
         if(type == "files")
         {
-            std::cout << "\n** Target1: Objetive";
-            std::cout << "\n- Local (y/n): ";
+            std::cout << "   |--Target1: Objetive\n";
+            std::cout << "      |-- Local (y/n): ";
             std::cin >> backupObjetive.local;
-            std::cout << "\n- Host: ";
+            std::cout << "      |-- Host: ";
             std::cin >> backupObjetive.host;
-            std::cout << "\n- Options: ";
+            std::cout << "      |-- Options: ";
             std::cin >> backupObjetive.options;
-            std::cout << "\n- Objetive: ";
+            std::cout << "      |-- Objetive: ";
             std::cin >> backupObjetive.target;
 
             if(backupObjetive.local == "n")
             {
-                std::cout << "\n*** User of Target1: Objetive";
-                std::cout << "\n- Username: ";
+                std::cout << "      |--User of Target1: Objetive\n";
+                std::cout << "         |-- Username: ";
                 std::cin >> uObj.username;
-                std::cout << "\n- Password: ";
+                std::cout << "         |-- Password: ";
                 std::cin >> uObj.password;
             }
         }
         else if(type == "database")
         {
-            std::cout << "\n** Database";
-            std::cout << "\n- Name: ";
+            std::cout << "\n   |--Database\n";
+            std::cout << "      |-- Name: ";
             std::cin >> backupDatabase.name;
-            std::cout << "\n*** User of Database";
-            std::cout << "\n- User: ";
+            std::cout << "      |--User of Database\n";
+            std::cout << "         |-- User: ";
             std::cin >> uDB.username;
-            std::cout << "\n- Password: ";
+            std::cout << "         |-- Password: ";
             std::cin >> uDB.password;
         }
         else
         {
-            std::cout << "\n --Backup type wrong--\n";
+            std::cout << "   |--Error: Backup type wrong";
             err = true;
         }
 
-        std::cout << "\n** Target2: Destiny";
-        std::cout << "\n- Local (y/n): ";
+        std::cout << "   |--Target2: Destiny\n";
+        std::cout << "      |-- Local (y/n): ";
         std::cin >> backupDestiny.local;
-        std::cout << "\n- Host: ";
+        std::cout << "      |-- Host: ";
         std::cin >> backupDestiny.host;
-        std::cout << "\n- Options: ";
+        std::cout << "      |-- Options: ";
         std::cin >> backupDestiny.options;
-        std::cout << "\n- Destiny: ";
+        std::cout << "      |-- Destiny: ";
         std::cin >> backupDestiny.target;
 
         if(backupDestiny.local == "n")
         {
-            std::cout << "\n*** User of Target2: Destiny";
-            std::cout << "\n- Username: ";
+            std::cout << "      |--User of Target2: Destiny\n";
+            std::cout << "         |-- Username: ";
             std::cin >> uDest.username;
-            std::cout << "\n- Password: ";
+            std::cout << "         |-- Password: ";
             std::cin >> uDest.password;
         }
 
         if(err == true)
-            std::cout << "\nSorry, something is wrong. Try again.\n";
+            std::cout << "   |--Error: Sorry, something is wrong. Try again.";
     }
     while(err == true);
 
@@ -110,7 +110,7 @@ void backups::data()
 
 bool backups::addRecord()
 {
-    std::cout << "\n* Adding a record\n";
+    std::cout << "\n|--Adding a record";
 
     bool is_ok = false;
 
@@ -235,7 +235,7 @@ bool backups::addRecord()
 }
 void backups::viewRecords()
 {
-    std::cout << "\n* Showing records\n";
+    std::cout << "\n|--Showing records";
 
     // Create SQL statement
         systemDB.conGen.querySQL = "SELECT * FROM backups, targets WHERE backups.id=targets.id_backup;";
@@ -251,34 +251,35 @@ void backups::viewRecords()
             printf("\n");
             return 0;
         };
+        printf("\n");
 
     // Execute SQL statement
         systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, handleRecords, 0,& systemDB.conGen.error);
         if (systemDB.conGen.response != SQLITE_OK)
         {
-            fprintf(stderr, "--Error--: %s\n", systemDB.conGen.error);
+            fprintf(stderr, "\n   |--Error: %s", systemDB.conGen.error);
             sqlite3_free(systemDB.conGen.error);
         }
         else
         {
-            fprintf(stdout, "--Ready--. \n");
+            fprintf(stdout, "\n   |--Result: OK.");
         }
 }
 void backups::configureDB()
 {
-    std::cout << "\n* Setting up database.\n";
+    std::cout << "\n|--Setting up database.";
     systemDB.conGen.error = 0;
 
     // Open database
         systemDB.conGen.response = sqlite3_open(systemDB.infoGen.nameDB,& systemDB.conGen.objSQLite);
         if (systemDB.conGen.response)
         {
-            fprintf(stderr, "--Error to open database--: %s\n", sqlite3_errmsg(systemDB.conGen.objSQLite));
+            fprintf(stderr, "\n   |--Error: Error to open database: %s.", sqlite3_errmsg(systemDB.conGen.objSQLite));
             exit(0);
         }
         else
         {
-            fprintf(stderr, "--Database OK--\n");
+            fprintf(stdout, "\n   |--Result: Database OK.");
         }
     // SQL Query
         systemDB.conGen.querySQL = "CREATE TABLE IF NOT EXISTS backups ("
@@ -323,16 +324,16 @@ void backups::configureDB()
         systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, NULL, 0,& systemDB.conGen.error);
         if (systemDB.conGen.response != SQLITE_OK)
         {
-            fprintf(stderr, "--Error--: %s\n", systemDB.conGen.error);
+            fprintf(stderr, "\n   |--Error: %s", systemDB.conGen.error);
             sqlite3_free(systemDB.conGen.error);
         }
         else
-            fprintf(stdout, "--Database and tables created--.\n");
+            fprintf(stdout, "\n   |--Result: Database and tables OK.");
 
 }
 bool backups::restartDB()
 {
-    std::cout << "\n* Restart database.\n";
+    std::cout << "\n|--Restart database.";
 
     // Query
         systemDB.conGen.querySQL = "DROP TABLE backups;"
@@ -345,12 +346,12 @@ bool backups::restartDB()
         systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, NULL, 0,& systemDB.conGen.error);
         if (systemDB.conGen.response != SQLITE_OK)
         {
-            fprintf(stderr, "--Error--: %s\n", systemDB.conGen.error);
+            fprintf(stderr, "\n   |--Error: %s", systemDB.conGen.error);
             sqlite3_free(systemDB.conGen.error);
         }
         else
         {
-            fprintf(stdout, "--Backups table was deleted--.\n");
+            fprintf(stdout, "\n   |--Result: OK.");
         }
 
     configureDB();
@@ -358,11 +359,11 @@ bool backups::restartDB()
 }
 bool backups::deleteRecord()
 {
-    std::cout << "\n* Delete a record\n";
+    std::cout << "\n|--Delete a record";
 
     // Data user
         std::string id;
-        std::cout << "Record ID to delete: ";
+        std::cout << "\n   |-- Record ID to delete: ";
         std::cin >> id;
 
     // Query
@@ -377,12 +378,12 @@ bool backups::deleteRecord()
         systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, NULL, 0,& systemDB.conGen.error);
         if (systemDB.conGen.response != SQLITE_OK)
         {
-            fprintf(stderr, "--Error--: %s\n", systemDB.conGen.error);
+            fprintf(stderr, "\n   |--Error: %s", systemDB.conGen.error);
             sqlite3_free(systemDB.conGen.error);
         }
         else
         {
-            fprintf(stdout, "--Record from backups was deleted--.\n");
+            fprintf(stdout, "\n   |--Result: Record from backups was deleted.");
         }
 
     // Close and delete
@@ -391,12 +392,12 @@ bool backups::deleteRecord()
 }
 bool backups::editRecord()
 {
-    std::cout << "\n* Editing a record\n";
+    std::cout << "\n|--Editing a record";
 
     bool is_ok = false;
     // Create SQL statement in string type
         std::string id;
-        std::cout << "\nRecord ID: ";
+        std::cout << "\n   |-- Record ID: ";
         std::cin >> id;
 
         std::string sql2;
@@ -432,13 +433,13 @@ bool backups::editRecord()
         systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, NULL, 0,& systemDB.conGen.error);
         if (systemDB.conGen.response != SQLITE_OK)
         {
-            fprintf(stderr, "--Error--: %s\n", systemDB.conGen.error);
+            fprintf(stderr, "\n   |--Error: %s", systemDB.conGen.error);
             sqlite3_free(systemDB.conGen.error);
             is_ok = false;
         }
         else
         {
-            fprintf(stdout, "--Ready--\n");
+            fprintf(stdout, "\n   |--Result: OK.");
             is_ok = true;
         }
 
@@ -468,13 +469,13 @@ bool backups::db::connection::executeSQL(char* obj)
     response = sqlite3_exec(objSQLite, querySQL, NULL, 0, & error);
     if (response != SQLITE_OK)
     {
-        fprintf(stderr, "--Error--: %s\n", error);
+        fprintf(stderr, "\n   |--Error: %s on %s\n", error, obj);
         sqlite3_free(error);
         return false;
     }
     else
     {
-        fprintf(stdout, "--Ready %s--\n", obj);
+        fprintf(stdout, "\n   |--Result: OK %s", obj);
         return true;
     }
 }

@@ -53,7 +53,7 @@ class backups
                     short day, month, year;
                 };
             };
-            struct
+            struct db
             {
                 struct info
                 {
@@ -66,6 +66,10 @@ class backups
                     {
                         sqlite3_close(objSQLite);
                     }
+                    void convertToChar(std::string);
+                    bool executeSQL();
+                    void deleteMemory();
+
                     sqlite3 *objSQLite;
                     char *error = 0;
                     int response;

@@ -136,11 +136,7 @@ bool backups::addRecord()
             ;
 
         // Convert to char*
-            systemDB.conGen.querySQL = new char[sql2.length()];
-            for(int a = 0; a < sql2.length(); a++)
-            {
-                systemDB.conGen.querySQL[a] = sql2[a];
-            }
+            systemDB.conGen.convertToChar(sql2);
 
         // Execute SQL statement
             systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, NULL, 0, & systemDB.conGen.error);
@@ -583,4 +579,13 @@ bool backups::editRecord()
 bool backups::makeBackup()
 {
     return true;
+}
+void backups::db::connection::convertToChar(std::string sql2)
+{
+
+    querySQL = new char[sql2.length()];
+    for(int a = 0; a < sql2.length(); a++)
+    {
+        querySQL[a] = sql2[a];
+    }
 }

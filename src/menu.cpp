@@ -47,32 +47,32 @@ void menu::handleItems()
 			bakGen->data();
 			if(bakGen->addRecord())
 			{
-                std::cout << "\n   |--Result: Backup successfully saved.\n";
+                std::cout << "\n   |--Result: Backup successfully saved.";
             }
             else
 			{
-                std::cout << "\n   |--Error: Error to save backup.\n";
+                std::cout << "\n   |--Error: Error to save backup.";
             }
 			break;
 		case 3:
 			if(bakGen->deleteRecord())
 			{
-                std::cout << "\n   |--Result: Backup successfully deleted.\n";
+                std::cout << "\n   |--Result: Backup successfully deleted.";
             }
             else
 			{
-                std::cout << "\n   |--Error: Error to delete backup.\n";
+                std::cout << "\n   |--Error: Error to delete backup.";
             }
 			break;
 		case 4:
 			bakGen->data();
 			if(bakGen->editRecord())
 			{
-                std::cout << "\n   |--Result: Backup successfully edited.\n";
+                std::cout << "\n   |--Result: Backup successfully edited.";
             }
             else
             {
-                std::cout << "\n   |--Error: Error to edit backup.\n";
+                std::cout << "\n   |--Error: Error to edit backup.";
             }
 			break;
         case 6:

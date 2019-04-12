@@ -65,7 +65,7 @@ void backups::data()
             std::cout << "\n   |--Database\n";
             std::cout << "      |-- Name: ";
             std::cin >> backupDatabase.name;
-            std::cout << "      |--User of Database";
+            std::cout << "      |--User of Database\n";
             std::cout << "         |-- User: ";
             std::cin >> uDB.username;
             std::cout << "         |-- Password: ";
@@ -73,7 +73,7 @@ void backups::data()
         }
         else
         {
-            std::cout << "\n   |--Error: Backup type wrong\n";
+            std::cout << "   |--Error: Backup type wrong";
             err = true;
         }
 
@@ -97,7 +97,7 @@ void backups::data()
         }
 
         if(err == true)
-            std::cout << "\n   |--Error: Sorry, something is wrong. Try again.\n";
+            std::cout << "   |--Error: Sorry, something is wrong. Try again.";
     }
     while(err == true);
 
@@ -256,12 +256,12 @@ void backups::viewRecords()
         systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, handleRecords, 0,& systemDB.conGen.error);
         if (systemDB.conGen.response != SQLITE_OK)
         {
-            fprintf(stderr, "\n   |--Error: %s\n", systemDB.conGen.error);
+            fprintf(stderr, "\n   |--Error: %s", systemDB.conGen.error);
             sqlite3_free(systemDB.conGen.error);
         }
         else
         {
-            fprintf(stdout, "\n   |--Result: OK. \n");
+            fprintf(stdout, "\n   |--Result: OK.");
         }
 }
 void backups::configureDB()
@@ -273,12 +273,12 @@ void backups::configureDB()
         systemDB.conGen.response = sqlite3_open(systemDB.infoGen.nameDB,& systemDB.conGen.objSQLite);
         if (systemDB.conGen.response)
         {
-            fprintf(stderr, "\n   |--Error: Error to open database: %s.\n", sqlite3_errmsg(systemDB.conGen.objSQLite));
+            fprintf(stderr, "\n   |--Error: Error to open database: %s.", sqlite3_errmsg(systemDB.conGen.objSQLite));
             exit(0);
         }
         else
         {
-            fprintf(stdout, "\n   |--Result: Database OK.\n");
+            fprintf(stdout, "\n   |--Result: Database OK.");
         }
     // SQL Query
         systemDB.conGen.querySQL = "CREATE TABLE IF NOT EXISTS backups ("
@@ -323,11 +323,11 @@ void backups::configureDB()
         systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, NULL, 0,& systemDB.conGen.error);
         if (systemDB.conGen.response != SQLITE_OK)
         {
-            fprintf(stderr, "\n   |--Error: %s\n", systemDB.conGen.error);
+            fprintf(stderr, "\n   |--Error: %s", systemDB.conGen.error);
             sqlite3_free(systemDB.conGen.error);
         }
         else
-            fprintf(stdout, "\n   |--Result: Database and tables OK.\n");
+            fprintf(stdout, "\n   |--Result: Database and tables OK.");
 
 }
 bool backups::restartDB()
@@ -345,12 +345,12 @@ bool backups::restartDB()
         systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, NULL, 0,& systemDB.conGen.error);
         if (systemDB.conGen.response != SQLITE_OK)
         {
-            fprintf(stderr, "\n   |--Error: %s\n", systemDB.conGen.error);
+            fprintf(stderr, "\n   |--Error: %s", systemDB.conGen.error);
             sqlite3_free(systemDB.conGen.error);
         }
         else
         {
-            fprintf(stdout, "\n   |--Result: OK.\n");
+            fprintf(stdout, "\n   |--Result: OK.");
         }
 
     configureDB();
@@ -377,12 +377,12 @@ bool backups::deleteRecord()
         systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, NULL, 0,& systemDB.conGen.error);
         if (systemDB.conGen.response != SQLITE_OK)
         {
-            fprintf(stderr, "\n   |--Error: %s\n", systemDB.conGen.error);
+            fprintf(stderr, "\n   |--Error: %s", systemDB.conGen.error);
             sqlite3_free(systemDB.conGen.error);
         }
         else
         {
-            fprintf(stdout, "\n   |--Result: Record from backups was deleted--.\n");
+            fprintf(stdout, "\n   |--Result: Record from backups was deleted.");
         }
 
     // Close and delete
@@ -432,13 +432,13 @@ bool backups::editRecord()
         systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, NULL, 0,& systemDB.conGen.error);
         if (systemDB.conGen.response != SQLITE_OK)
         {
-            fprintf(stderr, "\n   |--Error: %s\n", systemDB.conGen.error);
+            fprintf(stderr, "\n   |--Error: %s", systemDB.conGen.error);
             sqlite3_free(systemDB.conGen.error);
             is_ok = false;
         }
         else
         {
-            fprintf(stdout, "\n   |--Result: OK.\n");
+            fprintf(stdout, "\n   |--Result: OK.");
             is_ok = true;
         }
 
@@ -468,13 +468,13 @@ bool backups::db::connection::executeSQL(char* obj)
     response = sqlite3_exec(objSQLite, querySQL, NULL, 0, & error);
     if (response != SQLITE_OK)
     {
-        fprintf(stderr, "\n   |--Error: %s\n", error);
+        fprintf(stderr, "\n   |--Error: %s on %s\n", error, obj);
         sqlite3_free(error);
         return false;
     }
     else
     {
-        fprintf(stdout, "\n   |--Result: OK %s\n", obj);
+        fprintf(stdout, "\n   |--Result: OK %s", obj);
         return true;
     }
 }

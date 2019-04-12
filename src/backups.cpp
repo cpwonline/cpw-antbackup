@@ -98,7 +98,7 @@ void backups::viewRecords()
         {
             std::cout << "\n";
             for(int i=0; i<argc; i++){
-                printf("%s -> %s\n", colNames[i], argv[i]);
+                printf("%s: '%s' | ", colNames[i], argv[i]);
             }
             printf("\n");
             return 0;

@@ -8,11 +8,11 @@ void menu::listItems ()
 	do
 	{
 		std::cout << "|--List: \n";
-		std::cout << "   |--1) See backups list \n";
-		std::cout << "   |--2) Add a backup \n";
-		std::cout << "   |--3) Delete a backup \n";
-		std::cout << "   |--4) Edit a backup \n";
-		std::cout << "   |--5) Others \n";
+		std::cout << "   |-- 1) See backups list \n";
+		std::cout << "   |-- 2) Add a backup \n";
+		std::cout << "   |-- 3) Delete a backup \n";
+		std::cout << "   |-- 4) Edit a backup \n";
+		std::cout << "   |-- 5) Others \n";
 		std::cout << "\nYour choice: ";
 		std::cin >> option;
 
@@ -20,17 +20,16 @@ void menu::listItems ()
 		{
             case 5:
                 std::cout << "\n   |--Others:\n";
-                std::cout << "      |--6) Restart database\n";
-                std::cout << "      |--7) Backups status\n";
-                std::cout << "      |--8) Make every backup now (force)\n";
+                std::cout << "      |-- 6) Restart database\n";
+                std::cout << "      |-- 7) Backups status\n";
+                std::cout << "      |-- 8) Make every backup now (force)\n";
                 std::cout << "\nYour choice: ";
                 std::cin >> option;
                 break;
 		}
 
 		if(option < 1 || option > 8)
-			std::cout << "\n|--Error:\n";
-			std::cout << "\n   |--Sorry, invalid option. Try again.\n";
+			std::cout << "\n|--Error: Sorry, invalid option. Try again.\n";
 	}while(option < 1 || option > 8);
 
 	currentItem = option;
@@ -48,38 +47,32 @@ void menu::handleItems()
 			bakGen->data();
 			if(bakGen->addRecord())
 			{
-                std::cout << "\n|--Result:.\n";
-                std::cout << "\n   |--Backup successfully saved.\n";
+                std::cout << "\n   |--Result: Backup successfully saved.\n";
             }
             else
 			{
-                std::cout << "\n|--Error:.\n";
-                std::cout << "\n   |--Error to save backup.\n";
+                std::cout << "\n   |--Error: Error to save backup.\n";
             }
 			break;
 		case 3:
 			if(bakGen->deleteRecord())
 			{
-                std::cout << "\n|--Result:.\n";
-                std::cout << "\n   |--Backup successfully deleted.\n";
+                std::cout << "\n   |--Result: Backup successfully deleted.\n";
             }
             else
 			{
-                std::cout << "\n|--Error:.\n";
-                std::cout << "\n   |--Error to delete backup.\n";
+                std::cout << "\n   |--Error: Error to delete backup.\n";
             }
 			break;
 		case 4:
 			bakGen->data();
 			if(bakGen->editRecord())
 			{
-                std::cout << "\n|--Result:.\n";
-                std::cout << "\n   |--Backup successfully edited.\n";
+                std::cout << "\n   |--Result: Backup successfully edited.\n";
             }
             else
             {
-                std::cout << "\n|--Error:.\n";
-                std::cout << "\n   |--Error to edit backup.\n";
+                std::cout << "\n   |--Error: Error to edit backup.\n";
             }
 			break;
         case 6:
@@ -103,7 +96,7 @@ void menu::loop()
         handleItems();
 
         std::cout << "\n|--Do you want to exit? (y/n)";
-        std::cout << "\nYour choice: ";
+        std::cout << "\n\nYour choice: ";
         std::cin >> answer;
         std::cout << "\n";
     }while(answer == 'n' || answer == 'N');

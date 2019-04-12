@@ -4,29 +4,29 @@ void menu::listItems ()
 {
 	short option;
 
-	std::cout << "Bienvenido a CPW AntBackup \n";
+	std::cout << "Welcome to CPW AntBackup \n";
 	do
 	{
-		std::cout << "1) Ver lista de respaldos \n";
-		std::cout << "2) Agregar un respaldo \n";
-		std::cout << "3) Eliminar un respaldo \n";
-		std::cout << "4) Editar un respaldo \n";
-		std::cout << "5) Configuraciones \n";
-		std::cout << "\nSu opción: ";
+		std::cout << "1) See backups list \n";
+		std::cout << "2) Add a backup \n";
+		std::cout << "3) Delete a backup \n";
+		std::cout << "4) Edit a backup \n";
+		std::cout << "5) Settings \n";
+		std::cout << "\nYour choice: ";
 		std::cin >> option;
 
 		switch(option)
 		{
             case 5:
-                std::cout << "\n\n-Configuracions:\n";
-                std::cout << "6) Reiniciar base de datos:\n";
-                std::cout << "\nSu opción: ";
+                std::cout << "\n\n-Settings:\n";
+                std::cout << "6) Restart database:\n";
+                std::cout << "\nYour choice: ";
                 std::cin >> option;
                 break;
 		}
 
 		if(option < 1 || option > 6)
-			std::cout << "\nDisculpe, la opción es inválida, intente nuevamente.\n";
+			std::cout << "\nSorry, invalid option. Try again.\n";
 	}while(option < 1 || option > 6);
 
 	currentItem = option;
@@ -44,13 +44,22 @@ void menu::handleItems()
 		case 2:
 			bakGen->data();
 			if(bakGen->addRecord())
-                std::cout << "\n Se guardó su backup con exito.\n";
+                std::cout << "\n Backup successfully saved.\n";
             else
-                std::cout << "\n Hubo un error al guardar el backup.\n";
+                std::cout << "\n Error to save backup.\n";
 			break;
 		case 3:
+			if(bakGen->deleteRecord())
+                std::cout << "\n Backup successfully deleted.\n";
+            else
+                std::cout << "\n Error to delete backup.\n";
 			break;
 		case 4:
+			bakGen->data();
+			if(bakGen->editRecord())
+                std::cout << "\n Backup successfully edited.\n";
+            else
+                std::cout << "\n Error to edit backup.\n";
 			break;
 		case 5:
 			break;

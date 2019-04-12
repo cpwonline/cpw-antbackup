@@ -3,25 +3,25 @@
 void backups::data()
 {
 	std::cout << "\n\nGeneral";
-	std::cout << "\n- Objetivo: ";
+	std::cout << "\n- Target: ";
 	std::cin >> target;
-	std::cout << "\n- Destino: ";
+	std::cout << "\n- Destiny: ";
 	std::cin >> destiny;
-	std::cout << "\n- Día: ";
+	std::cout << "\n- Day: ";
 	std::cin >> dateBackup.day;
-	std::cout << "\n- Mes: ";
+	std::cout << "\n- Month: ";
 	std::cin >> dateBackup.month;
-	std::cout << "\n- Año: ";
+	std::cout << "\n- Year: ";
 	std::cin >> dateBackup.year;
-	std::cout << "\n- Hora: ";
+	std::cout << "\n- Hour: ";
 	std::cin >> timeBackup.hour;
-	std::cout << "\n- Minuto: ";
+	std::cout << "\n- Minute: ";
 	std::cin >> timeBackup.minute;
-	std::cout << "\n- Segundo: ";
+	std::cout << "\n- Second: ";
 	std::cin >> timeBackup.second;
-	std::cout << "\n- Repetición (y/n): ";
+	std::cout << "\n- Repeat (y/n): ";
 	std::cin >> repeat;
-	std::cout << "\n- Compresión (y/n): ";
+	std::cout << "\n- Compression (y/n): ";
 	std::cin >> compression;
 }
 bool backups::addRecord()
@@ -84,7 +84,7 @@ bool backups::addRecord()
         }
         else
         {
-            fprintf(stdout, "Query is OK\n");
+            fprintf(stdout, "Ready\n");
             is_ok = true;
         }
 
@@ -157,12 +157,12 @@ void backups::configureDB()
         res = sqlite3_open(nameDB, &db);
         if (res)
         {
-            fprintf(stderr, "No se puede abrir la base de datos: %s\n", sqlite3_errmsg(db));
+            fprintf(stderr, "Error to open database: %s\n", sqlite3_errmsg(db));
             exit(0);
         }
         else
         {
-            fprintf(stderr, "Base de datos OK\n");
+            fprintf(stderr, "Databse is OK\n");
         }
     // Query
         sql = "CREATE TABLE backups ("
@@ -185,7 +185,7 @@ void backups::configureDB()
         }
         else
         {
-            fprintf(stdout, "Base de datos y tabla creada.\n");
+            fprintf(stdout, "Database and table created.\n");
         }
 
     sqlite3_close(db);
@@ -202,12 +202,12 @@ bool backups::restartDB()
         res = sqlite3_open(nameDB, &db);
         if (res)
         {
-            fprintf(stderr, "No se puede abrir la base de datos: %s\n", sqlite3_errmsg(db));
+            fprintf(stderr, "Error to open database: %s\n", sqlite3_errmsg(db));
             exit(0);
         }
         else
         {
-            fprintf(stderr, "Base de datos OK\n");
+            fprintf(stderr, "Database is OK\n");
         }
     // Query
         sql = "DROP TABLE backups;";
@@ -221,10 +221,138 @@ bool backups::restartDB()
         }
         else
         {
-            fprintf(stdout, "Tabla backups eliminada.\n");
+            fprintf(stdout, "Backups table was deleted.\n");
         }
 
     sqlite3_close(db);
 
     configureDB();
+}
+bool backups::deleteRecord()
+{
+
+    // Setting up
+        std::cout << "\n* Delete a record.\n";
+        sqlite3 *db;
+        char *error = 0;
+        int res;
+        char *sql;
+
+        res = sqlite3_open(nameDB, &db);
+        if (res)
+        {
+            fprintf(stderr, "Error to open database: %s\n", sqlite3_errmsg(db));
+            exit(0);
+        }
+        else
+        {
+            fprintf(stderr, "Database is OK\n");
+        }
+    // Data user
+        std::string id;
+        std::cout << "Record ID to delete: ";
+        std::cin >> id;
+
+    // Query
+        std::string toString = "DELETE FROM backups WHERE id ='" + id + "';";
+        std::cout << "\ntoString: " << toString << ", size: " << toString.length() << "\n";
+        // To char
+            sql = new char[toString.length()];
+            for(int a = 0; a < toString.length(); a++)
+                sql[a] = toString[a];
+
+        std::cout << "\nSQL: " << sql << ", size: " << toString.length() << "\n";
+
+    // Execute SQL statement
+        res = sqlite3_exec(db, sql, NULL, 0, &error);
+        if (res != SQLITE_OK)
+        {
+            fprintf(stderr, "Error: %s\n", error);
+            sqlite3_free(error);
+        }
+        else
+        {
+            fprintf(stdout, "Record from backups was deleted.\n");
+        }
+
+    // Close and delete
+        delete[] sql;
+        sqlite3_close(db);
+}
+bool backups::editRecord()
+{
+    std::cout << "\nEditing a record\n";
+
+    sqlite3 *db;
+    char *error = 0;
+    int res;
+    char *sql;
+    bool is_ok = false;
+    // Open database
+        res = sqlite3_open(nameDB, &db);
+        if (res)
+        {
+            fprintf(stderr, "Error to open database: %s\n", sqlite3_errmsg(db));
+            exit(0);
+        }
+        else
+        {
+            fprintf(stderr, "Database OK\n");
+        }
+    // Create SQL statement in string type
+        std::string id;
+        std::cout << "\nRecord ID: ";
+        std::cin >> id;
+
+        std::string sql2;
+        sql2 = "UPDATE backups SET "
+                "target='" + target + "',"
+                "destiny='" + destiny + "',"
+                "compression='" + compression + "',"
+                "repeat='" + repeat + "',"
+                "datetimeB='"
+                    + std::to_string(dateBackup.day) + "-"
+                    + std::to_string(dateBackup.month) + "-"
+                    + std::to_string(dateBackup.year) + " "
+                    + std::to_string(timeBackup.hour) + ":"
+                    + std::to_string(timeBackup.minute) + ":"
+                    + std::to_string(timeBackup.second) +
+                "',"
+                "dateFreg=DATETIME(STRFTIME('%s','now'), 'unixepoch') "
+                "WHERE id='" + id + "'"
+            ";"
+        ;
+
+        std::cout << "\n SQL2 = " << sql2 << ", size: " << sql2.length() << "\n";
+
+    // Convert to char*
+        sql = new char[sql2.length()];
+        for(int a = 0; a < sql2.length(); a++)
+        {
+            sql[a] = sql2[a];
+        }
+        std::cout << "\n SQL = " << sql << "\n";
+
+    // Execute SQL statement
+        res = sqlite3_exec(db, sql, NULL, 0, &error);
+        if (res != SQLITE_OK)
+        {
+            fprintf(stderr, "Error: %s\n", error);
+            sqlite3_free(error);
+            is_ok = false;
+        }
+        else
+        {
+            fprintf(stdout, "Ready\n");
+            is_ok = true;
+        }
+
+    sqlite3_close(db);
+
+    delete[] sql;
+
+    if(is_ok)
+        return true;
+    else
+        return false;
 }

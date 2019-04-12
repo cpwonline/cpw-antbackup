@@ -67,7 +67,7 @@ class backups
                         sqlite3_close(objSQLite);
                     }
                     void convertToChar(std::string);
-                    bool executeSQL();
+                    bool executeSQL(char* obj);
                     void deleteMemory();
 
                     sqlite3 *objSQLite;

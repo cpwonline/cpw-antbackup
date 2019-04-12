@@ -226,3 +226,54 @@ bool backups::restartDB()
 
     configureDB();
 }
+bool backups::deleteRecord()
+{
+
+    // Setting up
+        std::cout << "\n* Delete a record.\n";
+        sqlite3 *db;
+        char *error = 0;
+        int res;
+        char *sql;
+
+        res = sqlite3_open(nameDB, &db);
+        if (res)
+        {
+            fprintf(stderr, "Error to open database: %s\n", sqlite3_errmsg(db));
+            exit(0);
+        }
+        else
+        {
+            fprintf(stderr, "Database is OK\n");
+        }
+    // Data user
+        std::string id;
+        std::cout << "Record ID to delete: ";
+        std::cin >> id;
+
+    // Query
+        std::string toString = "DELETE FROM backups WHERE id ='" + id + "';";
+        std::cout << "\ntoString: " << toString << ", size: " << toString.length() << "\n";
+        // To char
+            sql = new char[toString.length()];
+            for(int a = 0; a < toString.length(); a++)
+                sql[a] = toString[a];
+
+        std::cout << "\nSQL: " << sql << ", size: " << toString.length() << "\n";
+
+    // Execute SQL statement
+        res = sqlite3_exec(db, sql, NULL, 0, &error);
+        if (res != SQLITE_OK)
+        {
+            fprintf(stderr, "Error: %s\n", error);
+            sqlite3_free(error);
+        }
+        else
+        {
+            fprintf(stdout, "Record from backups was deleted.\n");
+        }
+
+    // Close and delete
+        delete[] sql;
+        sqlite3_close(db);
+}

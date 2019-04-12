@@ -49,6 +49,10 @@ void menu::handleItems()
                 std::cout << "\n Error to save backup.\n";
 			break;
 		case 3:
+			if(bakGen->deleteRecord())
+                std::cout << "\n Backup successfully deleted.\n";
+            else
+                std::cout << "\n Error to delete backup.\n";
 			break;
 		case 4:
 			break;

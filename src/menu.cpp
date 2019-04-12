@@ -4,7 +4,7 @@ void menu::listItems ()
 {
 	short option;
 
-	std::cout << "Welcome to CPW AntBackup \n";
+	std::cout << "\nWelcome to CPW AntBackup \n";
 	do
 	{
 		std::cout << "1) See backups list \n";
@@ -60,8 +60,6 @@ void menu::handleItems()
                 std::cout << "\n Backup successfully edited.\n";
             else
                 std::cout << "\n Error to edit backup.\n";
-			break;
-		case 5:
 			break;
         case 6:
             bakGen->restartDB();

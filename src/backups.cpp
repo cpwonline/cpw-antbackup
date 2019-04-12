@@ -135,29 +135,7 @@ bool backups::addRecord()
                 ");"
             ;
 
-        // Convert to char*
-            systemDB.conGen.querySQL = new char[sql2.length()];
-            for(int a = 0; a < sql2.length(); a++)
-            {
-                systemDB.conGen.querySQL[a] = sql2[a];
-            }
-
-        // Execute SQL statement
-            systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, NULL, 0, & systemDB.conGen.error);
-            if (systemDB.conGen.response != SQLITE_OK)
-            {
-                fprintf(stderr, "--Error--: %s\n", systemDB.conGen.error);
-                sqlite3_free(systemDB.conGen.error);
-                is_ok = false;
-            }
-            else
-            {
-                fprintf(stdout, "--Ready Backups--\n");
-                is_ok = true;
-            }
-
-        // Delete dynamic memory
-            delete[] systemDB.conGen.querySQL;
+        is_ok = systemDB.conGen.makeEvery(sql2, "Backups");
 
     // Files (Objetive) or Databases
         // if is files or database
@@ -185,29 +163,7 @@ bool backups::addRecord()
                 ;
             }
 
-        // Convert to char*
-            systemDB.conGen.querySQL = new char[sql2.length()];
-            for(int a = 0; a < sql2.length(); a++)
-            {
-                systemDB.conGen.querySQL[a] = sql2[a];
-            }
-
-        // Execute SQL statement
-            systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, NULL, 0, & systemDB.conGen.error);
-            if (systemDB.conGen.response != SQLITE_OK)
-            {
-                fprintf(stderr, "--Error--: %s\n", systemDB.conGen.error);
-                sqlite3_free(systemDB.conGen.error);
-                is_ok = false;
-            }
-            else
-            {
-                fprintf(stdout, "--Ready Files (objetive) or databases--\n");
-                is_ok = true;
-            }
-
-        // Delete dynamic memory
-            delete[] systemDB.conGen.querySQL;
+        is_ok = systemDB.conGen.makeEvery(sql2, "Files (objetive) or database");
 
     // Database user
         if(type == "database")
@@ -222,29 +178,7 @@ bool backups::addRecord()
                         ");"
                     ;
 
-            // Convert to char*
-                systemDB.conGen.querySQL = new char[sql2.length()];
-                for(int a = 0; a < sql2.length(); a++)
-                {
-                    systemDB.conGen.querySQL[a] = sql2[a];
-                }
-
-            // Execute SQL statement
-                systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, NULL, 0, & systemDB.conGen.error);
-                if (systemDB.conGen.response != SQLITE_OK)
-                {
-                    fprintf(stderr, "--Error--: %s\n", systemDB.conGen.error);
-                    sqlite3_free(systemDB.conGen.error);
-                    is_ok = false;
-                }
-                else
-                {
-                    fprintf(stdout, "--Ready Database user--\n");
-                    is_ok = true;
-                }
-
-            // Delete dynamic memory
-                delete[] systemDB.conGen.querySQL;
+            is_ok = systemDB.conGen.makeEvery(sql2, "Database user");
         }
 
     // Target user: objetive
@@ -260,29 +194,7 @@ bool backups::addRecord()
                         ");"
                     ;
 
-            // Convert to char*
-                systemDB.conGen.querySQL = new char[sql2.length()];
-                for(int a = 0; a < sql2.length(); a++)
-                {
-                    systemDB.conGen.querySQL[a] = sql2[a];
-                }
-
-            // Execute SQL statement
-                systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, NULL, 0, & systemDB.conGen.error);
-                if (systemDB.conGen.response != SQLITE_OK)
-                {
-                    fprintf(stderr, "--Error--: %s\n", systemDB.conGen.error);
-                    sqlite3_free(systemDB.conGen.error);
-                    is_ok = false;
-                }
-                else
-                {
-                    fprintf(stdout, "--Ready Target user: objetive--\n");
-                    is_ok = true;
-                }
-
-            // Delete dynamic memory
-                delete[] systemDB.conGen.querySQL;
+            is_ok = systemDB.conGen.makeEvery(sql2, "Target user: objetive");
         }
 
     // Target destiny
@@ -298,29 +210,7 @@ bool backups::addRecord()
                     ");"
                 ;
 
-        // Convert to char*
-            systemDB.conGen.querySQL = new char[sql2.length()];
-            for(int a = 0; a < sql2.length(); a++)
-            {
-                systemDB.conGen.querySQL[a] = sql2[a];
-            }
-
-        // Execute SQL statement
-            systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, NULL, 0, & systemDB.conGen.error);
-            if (systemDB.conGen.response != SQLITE_OK)
-            {
-                fprintf(stderr, "--Error--: %s\n", systemDB.conGen.error);
-                sqlite3_free(systemDB.conGen.error);
-                is_ok = false;
-            }
-            else
-            {
-                fprintf(stdout, "--Ready Target Destiny--\n");
-                is_ok = true;
-            }
-
-        // Delete dynamic memory
-            delete[] systemDB.conGen.querySQL;
+            is_ok = systemDB.conGen.makeEvery(sql2, "Target destiny");
 
     // Destiny user
         if(backupDestiny.local == "n")
@@ -335,29 +225,7 @@ bool backups::addRecord()
                     ");"
                 ;
 
-            // Convert to char*
-                systemDB.conGen.querySQL = new char[sql2.length()];
-                for(int a = 0; a < sql2.length(); a++)
-                {
-                    systemDB.conGen.querySQL[a] = sql2[a];
-                }
-
-            // Execute SQL statement
-                systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, NULL, 0, & systemDB.conGen.error);
-                if (systemDB.conGen.response != SQLITE_OK)
-                {
-                    fprintf(stderr, "--Error--: %s\n", systemDB.conGen.error);
-                    sqlite3_free(systemDB.conGen.error);
-                    is_ok = false;
-                }
-                else
-                {
-                    fprintf(stdout, "--Ready Target user: objetive--\n");
-                    is_ok = true;
-                }
-
-            // Delete dynamic memory
-                delete[] systemDB.conGen.querySQL;
+            is_ok = systemDB.conGen.makeEvery(sql2, "Destiny user");
         }
 
     if(is_ok)
@@ -583,4 +451,46 @@ bool backups::editRecord()
 bool backups::makeBackup()
 {
     return true;
+}
+void backups::db::connection::convertToChar(std::string sql2)
+{
+
+    querySQL = new char[sql2.length()];
+    for(int a = 0; a < sql2.length(); a++)
+    {
+        querySQL[a] = sql2[a];
+    }
+}
+bool backups::db::connection::executeSQL(char* obj)
+{
+
+    response = sqlite3_exec(objSQLite, querySQL, NULL, 0, & error);
+    if (response != SQLITE_OK)
+    {
+        fprintf(stderr, "--Error--: %s\n", error);
+        sqlite3_free(error);
+        return false;
+    }
+    else
+    {
+        fprintf(stdout, "--Ready %s--\n", obj);
+        return true;
+    }
+}
+void backups::db::connection::deleteMemory()
+{
+    delete[] querySQL;
+}
+bool backups::db::connection::makeEvery(std::string sql2, char* title)
+{
+    // Convert to char*
+        convertToChar(sql2);
+
+    // Execute SQL statement
+        bool res = executeSQL(title);
+
+    // Delete dynamic memory
+        deleteMemory();
+
+    return res;
 }

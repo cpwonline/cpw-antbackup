@@ -11,10 +11,12 @@ class menu
 
 		void listItems();
 		void handleItems();
+		void loop();
 	protected:
 
 	private:
-		 short currentItem;
+        short currentItem;
+        backups *bakGen;
 
 };
 

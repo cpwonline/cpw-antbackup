@@ -97,7 +97,7 @@ void backups::viewRecords()
         genDB.conGen.querySQL = "SELECT * FROM backups;";
 
     // Handle records
-        auto handleRecords = [](void *nada, int argc, char **argv, char **colNames) -> int
+        auto handleRecords = [](void *nothing, int argc, char **argv, char **colNames) -> int
         {
             std::cout << "\n";
             for(int i=0; i<argc; i++){

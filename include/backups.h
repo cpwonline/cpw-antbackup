@@ -18,6 +18,8 @@ class backups
 		bool editRecord();
 		void configureDB();
 		bool restartDB();
+		bool makeBackup();
+
 	protected:
 
 	private:

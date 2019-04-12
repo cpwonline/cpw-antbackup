@@ -272,3 +272,7 @@ bool backups::editRecord()
     else
         return false;
 }
+bool backups::makeBackup()
+{
+
+}

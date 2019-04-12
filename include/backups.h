@@ -1,4 +1,3 @@
-
 #ifndef _BACKUPS_H_
 #define _BACKUPS_H_
 
@@ -18,6 +17,7 @@ class backups
 		bool editRecord();
 		void configureDB();
 		bool restartDB();
+
 	protected:
 
 	private:
@@ -54,6 +54,7 @@ class backups
             info infoGen;
             connection conGen;
 		};
+
 		std::string target;
 		std::string destiny;
 		char compression, repeat;

@@ -204,7 +204,7 @@ bool backups::addRecord()
 
     // Target destiny
         // SQL String
-                sql2 = "INSERT INTO targets (local, host, options, target, freg, id_backup)"
+                sql2 = "INSERT INTO targets (type, local, host, options, target, freg, id_backup)"
                     " VALUES ("
                         "'" + std::to_string(backupDestiny.type) + "',"
                         "'" + std::to_string(backupDestiny.local) + "',"

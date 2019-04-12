@@ -46,7 +46,7 @@ void backups::data()
             std::cin >> backupObjetive.local;
             std::cout << "      |-- Host: ";
             std::cin >> backupObjetive.host;
-            std::cout << "      |-- Options: ";
+            std::cout << "      |-- Options (none): ";
             std::cin >> backupObjetive.options;
             std::cout << "      |-- Objetive: ";
             std::cin >> backupObjetive.target;
@@ -82,7 +82,7 @@ void backups::data()
         std::cin >> backupDestiny.local;
         std::cout << "      |-- Host: ";
         std::cin >> backupDestiny.host;
-        std::cout << "      |-- Options: ";
+        std::cout << "      |-- Options (none): ";
         std::cin >> backupDestiny.options;
         std::cout << "      |-- Destiny: ";
         std::cin >> backupDestiny.target;

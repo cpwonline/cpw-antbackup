@@ -21,14 +21,17 @@ class backups
 	protected:
 
 	private:
-		struct time
-		{
-			short hour, minute, second;
-		};
-		struct date
-		{
-			short day, month, year;
-		};
+        struct datetime
+        {
+            struct time
+            {
+                short hour, minute, second;
+            };
+            struct date
+            {
+                short day, month, year;
+            };
+        };
 		struct database
 		{
             struct info
@@ -54,8 +57,8 @@ class backups
 		std::string target;
 		std::string destiny;
 		char compression, repeat;
-		time timeBackup;
-		date dateBackup;
+		datetime::date dateBackup;
+		datetime::time timeBackup;
 		database genDB;
 };
 

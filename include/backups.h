@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <string>
+#include <fstream>
 
 class backups
 {
@@ -27,6 +28,7 @@ class backups
 		bool compression, repeat;
 		time timeBackup;
 		date dateBackup;
+		ofstream *ofileGen;
 };
 
 #endif // _BACKUPS_H_

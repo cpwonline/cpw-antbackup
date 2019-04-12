@@ -27,5 +27,26 @@ void backups::data()
 }
 bool backups::add()
 {
+    ofileGen = new ofstream;
+    bool is_ok = true;
 
+    if(ofileGen->is_open())
+    {
+        ofileGen->open("../data/backupsList.db");
+        ofileGen << target << "," << destiny << "," << compression;
+        ofileGen << "," << dateBackup.day << "," << dateBackup.month;
+        ofileGen << "," << dateBackup.year << "," << timeBackup.hour;
+        ofileGen << "," << timeBackup.minute << "," << timeBackup.second;
+        ofileGen << "," << repeat << "\n";
+    }
+    else
+        is_ok = false;
+        s
+    ofileGen->close();
+    delete ofileGen;
+
+    if(is_ok)
+        return true;
+    else
+        return false;
 }

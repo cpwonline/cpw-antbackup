@@ -1,8 +1,8 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*-  */
 /*
- * main.cc
- * Copyright (C) 2019 CPW Online <cpwonline@otmail.com>
- * 
+ * menu.h
+ * Copyright (C) 2019 CPW Online <cpwonline@hotmail.com>
+ *
  * net.cpwonline.cpw-antbackup is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or
@@ -17,15 +17,22 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <iostream>
-#include "menu.h"
+#ifndef _MENU_H_
+#define _MENU_H_
 
-int main()
+class menu
 {
-	menu menuGen;
-	menuGen.listItems();
-	menuGen.handleItems();
-	
-	return 0;
-}
+	public:
+		short getCurrentItem() const;
+		 
+		void listItems();
+		void handleItems();
+	protected:
+
+	private:
+		 short currentItem;
+
+};
+
+#endif // _MENU_H_
 

@@ -108,6 +108,8 @@ void backups::data()
             std::cin >> uDest.password;
         }
     }
+    if(err == true)
+        std::cout << "\Sorry, something is wrong. Try again.\n";
     while(err == true);
 
 }
@@ -119,10 +121,10 @@ bool backups::addRecord()
 
     // Create SQL statement in string type
         std::string sql2;
-        sql2 = "INSERT INTO backups (title, target, destiny, type, local, compression, repeat, datetimeB, dateFreg) "
+        sql2 = "INSERT INTO backups (type, title, compression, repeat, local, , , datetimeB, dateFreg) "
             "VALUES ("
-                "'" + title + "',"
                 "'" + type + "',"
+                "'" + title + "',"
                 "'" + compression + "',"
                 "'" + repeat + "',"
                 "'"
@@ -133,9 +135,49 @@ bool backups::addRecord()
                     + std::to_string(timeBackup.minute) + ":"
                     + std::to_string(timeBackup.second) +
                 "',"
-                "DATETIME(STRFTIME('%s','now'), 'unixepoch')"
-            ");"
         ;
+
+        switch(type)
+        {
+            case "files":
+            {
+                sql2 = sql2 + backupObjetive.local + ","
+                    + backupObjetive.host + ","
+                    + backupObjetive.options + ","
+                    + backupObjetive.target + ","
+                ;
+
+                if(backupObjetive.local == 'n')
+                {
+                    sql2 = sql2 + uObj.username + ",";
+                        + uObj.password + ","
+                    ;
+                }
+                break;
+            }
+            case "database":
+            {
+                sql2 = sql2 + backupDatabase.name + ","
+                sql2 = sql2 + uDB.username + ","
+                sql2 = sql2 + uDB.password + ","
+                break;
+            }
+        }
+
+        sql2 = sql2 + backupDestiny.local + ","
+            + backupDestiny.host + ","
+            + backupDestiny.options + ","
+            + backupDestiny.target + ","
+        ;
+
+        if(backupDestiny.local == 'n')
+        {
+            sql2 = sql2 + uDest.username + ","
+                + uDest.password + ","
+            ;
+        }
+
+        sql2 = sql2 + "DATETIME(STRFTIME('%s','now'), 'unixepoch'));";
 
     // Convert to char*
         systemDB.conGen.querySQL = new char[sql2.length()];

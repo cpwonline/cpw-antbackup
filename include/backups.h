@@ -57,7 +57,7 @@ class backups
 		};
 
 		std::string target, destiny, type;
-		char compression, repeat;
+		char compression, repeat, local;
 		datetime::date dateBackup;
 		datetime::time timeBackup;
 		database genDB;

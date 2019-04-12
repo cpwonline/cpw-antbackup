@@ -58,15 +58,12 @@ bool backups::addRecord()
             ");"
         ;
 
-        std::cout << "\n SQL2 = " << sql2 << ", size: " << sql2.length() << "\n";
-
     // Convert to char*
         genDB.conGen.querySQL = new char[sql2.length()];
         for(int a = 0; a < sql2.length(); a++)
         {
             genDB.conGen.querySQL[a] = sql2[a];
         }
-        std::cout << "\n SQL = " << genDB.conGen.querySQL << "\n";
 
     // Execute SQL statement
         genDB.conGen.response = sqlite3_exec(genDB.conGen.objSQLite, genDB.conGen.querySQL, NULL, 0, & genDB.conGen.error);
@@ -189,13 +186,11 @@ bool backups::deleteRecord()
 
     // Query
         std::string toString = "DELETE FROM backups WHERE id ='" + id + "';";
-        std::cout << "\ntoString: " << toString << ", size: " << toString.length() << "\n";
-        // To char
-            genDB.conGen.querySQL = new char[toString.length()];
-            for(int a = 0; a < toString.length(); a++)
-                genDB.conGen.querySQL[a] = toString[a];
 
-        std::cout << "\nSQL: " << genDB.conGen.querySQL << ", size: " << toString.length() << "\n";
+    // To char
+        genDB.conGen.querySQL = new char[toString.length()];
+        for(int a = 0; a < toString.length(); a++)
+            genDB.conGen.querySQL[a] = toString[a];
 
     // Execute SQL statement
         genDB.conGen.response = sqlite3_exec(genDB.conGen.objSQLite, genDB.conGen.querySQL, NULL, 0,& genDB.conGen.error);
@@ -241,15 +236,12 @@ bool backups::editRecord()
             ";"
         ;
 
-        std::cout << "\n SQL2 = " << sql2 << ", size: " << sql2.length() << "\n";
-
     // Convert to char*
         genDB.conGen.querySQL = new char[sql2.length()];
         for(int a = 0; a < sql2.length(); a++)
         {
             genDB.conGen.querySQL[a] = sql2[a];
         }
-        std::cout << "\n SQL = " << genDB.conGen.querySQL << "\n";
 
     // Execute SQL statement
         genDB.conGen.response = sqlite3_exec(genDB.conGen.objSQLite, genDB.conGen.querySQL, NULL, 0,& genDB.conGen.error);

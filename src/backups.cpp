@@ -497,12 +497,12 @@ bool backups::deleteRecord()
         std::cin >> id;
 
     // Query
-        std::string toString = "DELETE FROM backups WHERE id ='" + id + "';";
+        std::string sql2 = "DELETE FROM backups WHERE id ='" + id + "';";
 
     // To char
-        systemDB.conGen.querySQL = new char[toString.length()];
-        for(int a = 0; a < toString.length(); a++)
-            systemDB.conGen.querySQL[a] = toString[a];
+        systemDB.conGen.querySQL = new char[sql2.length()];
+        for(int a = 0; a < sql2.length(); a++)
+            systemDB.conGen.querySQL[a] = sql2[a];
 
     // Execute SQL statement
         systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, NULL, 0,& systemDB.conGen.error);

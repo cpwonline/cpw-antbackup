@@ -10,7 +10,7 @@ backups::~backups()
 }
 void backups::data()
 {
-	std::cout << "\n\nGeneral";
+	std::cout << "\n\n* Recolecting data";
 	std::cout << "\n- Target: ";
 	std::cin >> target;
 	std::cout << "\n- Destiny: ";
@@ -34,7 +34,7 @@ void backups::data()
 }
 bool backups::addRecord()
 {
-    std::cout << "\nAdding a record\n";
+    std::cout << "\n* Adding a record\n";
 
     bool is_ok = false;
 
@@ -58,27 +58,24 @@ bool backups::addRecord()
             ");"
         ;
 
-        std::cout << "\n SQL2 = " << sql2 << ", size: " << sql2.length() << "\n";
-
     // Convert to char*
         genDB.conGen.querySQL = new char[sql2.length()];
         for(int a = 0; a < sql2.length(); a++)
         {
             genDB.conGen.querySQL[a] = sql2[a];
         }
-        std::cout << "\n SQL = " << genDB.conGen.querySQL << "\n";
 
     // Execute SQL statement
         genDB.conGen.response = sqlite3_exec(genDB.conGen.objSQLite, genDB.conGen.querySQL, NULL, 0, & genDB.conGen.error);
         if (genDB.conGen.response != SQLITE_OK)
         {
-            fprintf(stderr, "Error: %s\n", genDB.conGen.error);
+            fprintf(stderr, "--Error--: %s\n", genDB.conGen.error);
             sqlite3_free(genDB.conGen.error);
             is_ok = false;
         }
         else
         {
-            fprintf(stdout, "Ready\n");
+            fprintf(stdout, "--Ready--\n");
             is_ok = true;
         }
 
@@ -128,12 +125,12 @@ void backups::configureDB()
         genDB.conGen.response = sqlite3_open(genDB.infoGen.nameDB,& genDB.conGen.objSQLite);
         if (genDB.conGen.response)
         {
-            fprintf(stderr, "Error to open database: %s\n", sqlite3_errmsg(genDB.conGen.objSQLite));
+            fprintf(stderr, "--Error to open database--: %s\n", sqlite3_errmsg(genDB.conGen.objSQLite));
             exit(0);
         }
         else
         {
-            fprintf(stderr, "Database OK\n");
+            fprintf(stderr, "--Database OK--\n");
         }
     // SQL Query
         genDB.conGen.querySQL = "CREATE TABLE backups ("
@@ -151,12 +148,12 @@ void backups::configureDB()
         genDB.conGen.response = sqlite3_exec(genDB.conGen.objSQLite, genDB.conGen.querySQL, NULL, 0,& genDB.conGen.error);
         if (genDB.conGen.response != SQLITE_OK)
         {
-            fprintf(stderr, "Error: %s\n", genDB.conGen.error);
+            fprintf(stderr, "--Error--: %s\n", genDB.conGen.error);
             sqlite3_free(genDB.conGen.error);
         }
         else
         {
-            fprintf(stdout, "Database and table created.\n");
+            fprintf(stdout, "--Database and table created--.\n");
         }
 }
 bool backups::restartDB()
@@ -170,18 +167,20 @@ bool backups::restartDB()
         genDB.conGen.response = sqlite3_exec(genDB.conGen.objSQLite, genDB.conGen.querySQL, NULL, 0,& genDB.conGen.error);
         if (genDB.conGen.response != SQLITE_OK)
         {
-            fprintf(stderr, "Error: %s\n", genDB.conGen.error);
+            fprintf(stderr, "--Error--: %s\n", genDB.conGen.error);
             sqlite3_free(genDB.conGen.error);
         }
         else
         {
-            fprintf(stdout, "Backups table was deleted.\n");
+            fprintf(stdout, "--Backups table was deleted--.\n");
         }
 
     configureDB();
 }
 bool backups::deleteRecord()
 {
+    std::cout << "\n* Delete a record\n";
+
     // Data user
         std::string id;
         std::cout << "Record ID to delete: ";
@@ -189,24 +188,22 @@ bool backups::deleteRecord()
 
     // Query
         std::string toString = "DELETE FROM backups WHERE id ='" + id + "';";
-        std::cout << "\ntoString: " << toString << ", size: " << toString.length() << "\n";
-        // To char
-            genDB.conGen.querySQL = new char[toString.length()];
-            for(int a = 0; a < toString.length(); a++)
-                genDB.conGen.querySQL[a] = toString[a];
 
-        std::cout << "\nSQL: " << genDB.conGen.querySQL << ", size: " << toString.length() << "\n";
+    // To char
+        genDB.conGen.querySQL = new char[toString.length()];
+        for(int a = 0; a < toString.length(); a++)
+            genDB.conGen.querySQL[a] = toString[a];
 
     // Execute SQL statement
         genDB.conGen.response = sqlite3_exec(genDB.conGen.objSQLite, genDB.conGen.querySQL, NULL, 0,& genDB.conGen.error);
         if (genDB.conGen.response != SQLITE_OK)
         {
-            fprintf(stderr, "Error: %s\n", genDB.conGen.error);
+            fprintf(stderr, "--Error--: %s\n", genDB.conGen.error);
             sqlite3_free(genDB.conGen.error);
         }
         else
         {
-            fprintf(stdout, "Record from backups was deleted.\n");
+            fprintf(stdout, "--Record from backups was deleted--.\n");
         }
 
     // Close and delete
@@ -214,7 +211,7 @@ bool backups::deleteRecord()
 }
 bool backups::editRecord()
 {
-    std::cout << "\nEditing a record\n";
+    std::cout << "\n* Editing a record\n";
 
     bool is_ok = false;
     // Create SQL statement in string type
@@ -241,27 +238,24 @@ bool backups::editRecord()
             ";"
         ;
 
-        std::cout << "\n SQL2 = " << sql2 << ", size: " << sql2.length() << "\n";
-
     // Convert to char*
         genDB.conGen.querySQL = new char[sql2.length()];
         for(int a = 0; a < sql2.length(); a++)
         {
             genDB.conGen.querySQL[a] = sql2[a];
         }
-        std::cout << "\n SQL = " << genDB.conGen.querySQL << "\n";
 
     // Execute SQL statement
         genDB.conGen.response = sqlite3_exec(genDB.conGen.objSQLite, genDB.conGen.querySQL, NULL, 0,& genDB.conGen.error);
         if (genDB.conGen.response != SQLITE_OK)
         {
-            fprintf(stderr, "Error: %s\n", genDB.conGen.error);
+            fprintf(stderr, "--Error--: %s\n", genDB.conGen.error);
             sqlite3_free(genDB.conGen.error);
             is_ok = false;
         }
         else
         {
-            fprintf(stdout, "Ready\n");
+            fprintf(stdout, "--Ready--\n");
             is_ok = true;
         }
 

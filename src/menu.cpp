@@ -17,6 +17,7 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <iostream>
 #include "menu.h"
 
 void menu::listItems ()
@@ -45,7 +46,7 @@ void menu::handleItems()
 	switch(currentItem)
 	{
 		case 1:
-			std::cout << "\nOpción 1\n;
+			std::cout << "\nOpción 1\n";
 			break;
 		case 2:
 			break;

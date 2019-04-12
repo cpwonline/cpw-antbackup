@@ -101,7 +101,7 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)"
 PROGRAMS = $(bin_PROGRAMS)
-am_net_cpwonline_cpw_antbackup_OBJECTS = main.$(OBJEXT)
+am_net_cpwonline_cpw_antbackup_OBJECTS = main.$(OBJEXT) menu.$(OBJEXT)
 net_cpwonline_cpw_antbackup_OBJECTS =  \
 	$(am_net_cpwonline_cpw_antbackup_OBJECTS)
 net_cpwonline_cpw_antbackup_DEPENDENCIES =
@@ -128,7 +128,7 @@ am__v_at_1 =
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/depcomp
 am__maybe_remake_depfiles = depfiles
-am__depfiles_remade = ./$(DEPDIR)/main.Po
+am__depfiles_remade = ./$(DEPDIR)/main.Po ./$(DEPDIR)/menu.Po
 am__mv = mv -f
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
@@ -148,6 +148,24 @@ AM_V_CXXLD = $(am__v_CXXLD_@AM_V@)
 am__v_CXXLD_ = $(am__v_CXXLD_@AM_DEFAULT_V@)
 am__v_CXXLD_0 = @echo "  CXXLD   " $@;
 am__v_CXXLD_1 = 
+COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
+	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
+LTCOMPILE = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) \
+	$(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) \
+	$(AM_CFLAGS) $(CFLAGS)
+AM_V_CC = $(am__v_CC_@AM_V@)
+am__v_CC_ = $(am__v_CC_@AM_DEFAULT_V@)
+am__v_CC_0 = @echo "  CC      " $@;
+am__v_CC_1 = 
+CCLD = $(CC)
+LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
+	$(AM_LDFLAGS) $(LDFLAGS) -o $@
+AM_V_CCLD = $(am__v_CCLD_@AM_V@)
+am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
+am__v_CCLD_0 = @echo "  CCLD    " $@;
+am__v_CCLD_1 = 
 SOURCES = $(net_cpwonline_cpw_antbackup_SOURCES)
 DIST_SOURCES = $(net_cpwonline_cpw_antbackup_SOURCES)
 am__can_run_installinfo = \
@@ -306,7 +324,9 @@ AM_CFLAGS = \
 	 -g
 
 net_cpwonline_cpw_antbackup_SOURCES = \
-	main.cpp
+	main.cpp \
+	menu.cpp \
+	menu.h
 
 net_cpwonline_cpw_antbackup_LDFLAGS = 
 net_cpwonline_cpw_antbackup_LDADD = 
@@ -404,6 +424,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/main.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/menu.Po@am__quote@ # am--include-marker
 
 $(am__depfiles_remade):
 	@$(MKDIR_P) $(@D)
@@ -566,6 +587,7 @@ clean-am: clean-binPROGRAMS clean-generic clean-libtool mostlyclean-am
 
 distclean: distclean-am
 		-rm -f ./$(DEPDIR)/main.Po
+	-rm -f ./$(DEPDIR)/menu.Po
 	-rm -f Makefile
 distclean-am: clean-am distclean-compile distclean-generic \
 	distclean-tags
@@ -612,6 +634,7 @@ installcheck-am:
 
 maintainer-clean: maintainer-clean-am
 		-rm -f ./$(DEPDIR)/main.Po
+	-rm -f ./$(DEPDIR)/menu.Po
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 

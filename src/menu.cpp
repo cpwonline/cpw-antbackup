@@ -1,42 +1,33 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*-  */
-/*
- * menu.cpp
- * Copyright (C) 2019 CPW Online <cpwonline@hotmail.com>
- *
- * net.cpwonline.cpw-antbackup is free software: you can redistribute it and/or modify it
- * under the terms of the GNU General Public License as published by the
- * Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * net.cpwonline.cpw-antbackup is distributed in the hope that it will be useful, but
- * WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- * See the GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License along
- * with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
-#include <iostream>
 #include "menu.h"
 
 void menu::listItems ()
 {
 	short option;
-	
-	std::cout << "Bienvenido a CPW AntBackup \n";
+
+	std::cout << "Welcome to CPW AntBackup \n";
 	do
 	{
-		std::cout << "1) Ver lista de respaldos \n";
-		std::cout << "2) Agregar un respaldo \n";
-		std::cout << "3) quitar un respaldo \n";
-		std::cout << "4) Editar un respaldo \n";
-		std::cout << "5) Configuraciones \n";
-		std::cout << "\nSu opción: ";
+		std::cout << "1) See backups list \n";
+		std::cout << "2) Add a backup \n";
+		std::cout << "3) Delete a backup \n";
+		std::cout << "4) Edit a backup \n";
+		std::cout << "5) Settings \n";
+		std::cout << "\nYour choice: ";
 		std::cin >> option;
-		if(option < 1 || option > 5)
-			std::cout << "\nDisculpe, la opción es inválida, intente nuevamente.\n";
-	}while(option < 1 || option > 5);
+
+		switch(option)
+		{
+            case 5:
+                std::cout << "\n\n-Settings:\n";
+                std::cout << "6) Restart database:\n";
+                std::cout << "\nYour choice: ";
+                std::cin >> option;
+                break;
+		}
+
+		if(option < 1 || option > 6)
+			std::cout << "\nSorry, invalid option. Try again.\n";
+	}while(option < 1 || option > 6);
 
 	currentItem = option;
 }
@@ -44,28 +35,37 @@ void menu::listItems ()
 void menu::handleItems()
 {
 	backups *bakGen = new backups;
+	bakGen->configureDB();
 	switch(currentItem)
 	{
 		case 1:
-			std::cout << "\nOpción 1\n";
+            bakGen->viewRecords();
 			break;
 		case 2:
-			if(true)
-			{
-				std::cout << "Mandó True" << "\n";
-			}
-			else
-			{
-				std::cout << "Mandó false" << "\n";
-			}
+			bakGen->data();
+			if(bakGen->addRecord())
+                std::cout << "\n Backup successfully saved.\n";
+            else
+                std::cout << "\n Error to save backup.\n";
 			break;
 		case 3:
+			if(bakGen->deleteRecord())
+                std::cout << "\n Backup successfully deleted.\n";
+            else
+                std::cout << "\n Error to delete backup.\n";
 			break;
 		case 4:
+			bakGen->data();
+			if(bakGen->editRecord())
+                std::cout << "\n Backup successfully edited.\n";
+            else
+                std::cout << "\n Error to edit backup.\n";
 			break;
 		case 5:
 			break;
+        case 6:
+            bakGen->restartDB();
+            break;
 	}
 	delete bakGen;
 }
-

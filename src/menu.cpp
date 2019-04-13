@@ -71,6 +71,7 @@ void menu::handleItems()
         case 7:
             break;
         case 8:
+            bakGen->makeBackup();
             break;
 	}
 	delete bakGen;

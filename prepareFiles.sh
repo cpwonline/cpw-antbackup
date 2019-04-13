@@ -1,16 +1,20 @@
 #!/bin/bash
 
-# Variables
-title="title"
-files="file1 file2 file3"
-dirs="dir1 dir2 dir3"
-output=`date +%Y-%m-%d_%H-%M-%S`_${title}.tar
+if [ -n "$1" ]; then
 
-# Packing files and directories
-tar -cv $files $dirs -f $output
+	# Variables
+		title=$1
+		files=$2
+		output=`date +%Y-%m-%d_%H-%M-%S`_${title}.tar
 
-# Compressing
-gzip $output
+	# Packing files
+		tar -cv $files -f $output
 
-# Delete extras
-rm $output
+	# Compressing
+		gzip $output
+
+else
+
+	echo "No parameters found. "
+
+fi

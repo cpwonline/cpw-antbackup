@@ -17,50 +17,81 @@ class backups
 		bool editRecord();
 		void configureDB();
 		bool restartDB();
+		bool makeBackup();
 
 	protected:
 
 	private:
-        struct datetime
-        {
-            struct time
+        // Structs and unions
+            struct targets
             {
-                short hour, minute, second;
+                short id;
+                std::string target, host, options, local;
             };
-            struct date
+
+            struct users
             {
-                short day, month, year;
+                short id;
+                std::string username, password;
             };
-        };
-		struct database
-		{
-            struct info
+
+            struct databases
             {
-                info() : nameDB("cpw_antbackup.db"){}
-                const char* nameDB;
+                short id;
+                std::string name;
             };
-            struct connection
+
+
+            struct datetime
             {
-                ~connection()
+                struct time
                 {
-                    sqlite3_close(objSQLite);
-                }
-                sqlite3 *objSQLite;
-                char *error = 0;
-                int response;
-                char *querySQL;
+                    short hour, minute, second;
+                };
+                struct date
+                {
+                    short day, month, year;
+                };
             };
+            struct
+            {
+                struct info
+                {
+                    //info();
+                    const char* nameDB;
+                };
+                struct connection
+                {
+                    ~connection()
+                    {
+                        sqlite3_close(objSQLite);
+                    }
+                    sqlite3 *objSQLite;
+                    char *error = 0;
+                    int response;
+                    char *querySQL;
+                };
 
-            info infoGen;
-            connection conGen;
-		};
+                info infoGen;
+                connection conGen;
+            }
+            systemDB;
 
-		std::string target;
-		std::string destiny;
-		char compression, repeat;
-		datetime::date dateBackup;
-		datetime::time timeBackup;
-		database genDB;
+        // Objects
+            short id;
+            std::string type, title;
+            char compression, repeat;
+
+            targets backupObjetive;
+            targets backupDestiny;
+            datetime::date backupDate;
+            datetime::time backupTime;
+
+            users uObj;
+            users uDB;
+            databases backupDatabase;
+            users uDest;
+
 };
 
 #endif // _BACKUPS_H_

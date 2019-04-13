@@ -11,23 +11,25 @@ void menu::listItems ()
 		std::cout << "2) Add a backup \n";
 		std::cout << "3) Delete a backup \n";
 		std::cout << "4) Edit a backup \n";
-		std::cout << "5) Settings \n";
+		std::cout << "5) Others \n";
 		std::cout << "\nYour choice: ";
 		std::cin >> option;
 
 		switch(option)
 		{
             case 5:
-                std::cout << "\n\n-Settings:\n";
-                std::cout << "6) Restart database:\n";
+                std::cout << "\n\n-Others:\n";
+                std::cout << "6) Restart database\n";
+                std::cout << "7) Backups status\n";
+                std::cout << "8) Make every backup now (force)\n";
                 std::cout << "\nYour choice: ";
                 std::cin >> option;
                 break;
 		}
 
-		if(option < 1 || option > 6)
+		if(option < 1 || option > 8)
 			std::cout << "\nSorry, invalid option. Try again.\n";
-	}while(option < 1 || option > 6);
+	}while(option < 1 || option > 8);
 
 	currentItem = option;
 }
@@ -62,6 +64,11 @@ void menu::handleItems()
 			break;
         case 6:
             bakGen->restartDB();
+            break;
+        case 7:
+            break;
+        case 8:
+            bakGen->makeBackup();
             break;
 	}
 }

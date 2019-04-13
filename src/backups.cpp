@@ -152,14 +152,14 @@ bool backups::addRecord()
             }
             else
             {
-                fprintf(stdout, "--Ready 1--\n");
+                fprintf(stdout, "--Ready Backups--\n");
                 is_ok = true;
             }
 
         // Delete dynamic memory
             delete[] systemDB.conGen.querySQL;
 
-    // Targets or Databases
+    // Files (Objetive) or Databases
         // if is files or database
             if(type == "files")
             {
@@ -178,14 +178,12 @@ bool backups::addRecord()
             {
                 sql2 = "INSERT INTO databases (name, freg, id_backup) "
                     "VALUES ("
-                        "'" + backupDatabase.name + ","
+                        "'" + backupDatabase.name + "',"
                         "DATETIME(STRFTIME('%s','now'), 'unixepoch'),"
                         "(SELECT MAX(id) FROM backups)"
                     ");"
                 ;
             }
-
-            std::cout << "\nLa consulta es: " << sql2 << "\n";
 
         // Convert to char*
             systemDB.conGen.querySQL = new char[sql2.length()];
@@ -204,42 +202,163 @@ bool backups::addRecord()
             }
             else
             {
-                fprintf(stdout, "--Ready 2--\n");
+                fprintf(stdout, "--Ready Files (objetive) or databases--\n");
                 is_ok = true;
             }
 
         // Delete dynamic memory
             delete[] systemDB.conGen.querySQL;
 
-            /*
+    // Database user
+        if(type == "database")
+        {
+            // Create SQL string type statement
+                    sql2 = "INSERT INTO users (user, password, freg, id_database) "
+                        "VALUES ("
+                            "'" + uDB.username + "',"
+                            "'" + uDB.password + "',"
+                            "DATETIME(STRFTIME('%s','now'), 'unixepoch'),"
+                            "(SELECT MAX(id) FROM databases)"
+                        ");"
+                    ;
 
-                + uDB.username + ","
-                + uDB.password + ","
+            // Convert to char*
+                systemDB.conGen.querySQL = new char[sql2.length()];
+                for(int a = 0; a < sql2.length(); a++)
+                {
+                    systemDB.conGen.querySQL[a] = sql2[a];
+                }
 
-            if(backupObjetive.local == 'n')
-            {
-                sql2 = sql2 + uObj.username + ",";
-                    + uObj.password + ","
+            // Execute SQL statement
+                systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, NULL, 0, & systemDB.conGen.error);
+                if (systemDB.conGen.response != SQLITE_OK)
+                {
+                    fprintf(stderr, "--Error--: %s\n", systemDB.conGen.error);
+                    sqlite3_free(systemDB.conGen.error);
+                    is_ok = false;
+                }
+                else
+                {
+                    fprintf(stdout, "--Ready Database user--\n");
+                    is_ok = true;
+                }
+
+            // Delete dynamic memory
+                delete[] systemDB.conGen.querySQL;
+        }
+
+    // Target user: objetive
+        if(backupObjetive.local == "n" && type == "files")
+        {
+            // Create SQL string type statement
+                    sql2 = "INSERT INTO users (user, password, freg, id_target) "
+                        "VALUES ("
+                            "'" + uObj.username + "',"
+                            "'" + uObj.password + "',"
+                            "DATETIME(STRFTIME('%s','now'), 'unixepoch'),"
+                            "(SELECT MAX(id) FROM targets)"
+                        ");"
+                    ;
+
+            // Convert to char*
+                systemDB.conGen.querySQL = new char[sql2.length()];
+                for(int a = 0; a < sql2.length(); a++)
+                {
+                    systemDB.conGen.querySQL[a] = sql2[a];
+                }
+
+            // Execute SQL statement
+                systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, NULL, 0, & systemDB.conGen.error);
+                if (systemDB.conGen.response != SQLITE_OK)
+                {
+                    fprintf(stderr, "--Error--: %s\n", systemDB.conGen.error);
+                    sqlite3_free(systemDB.conGen.error);
+                    is_ok = false;
+                }
+                else
+                {
+                    fprintf(stdout, "--Ready Target user: objetive--\n");
+                    is_ok = true;
+                }
+
+            // Delete dynamic memory
+                delete[] systemDB.conGen.querySQL;
+        }
+
+    // Target destiny
+        // SQL String
+                sql2 = "INSERT INTO targets (local, host, options, target, freg, id_backup)"
+                    " VALUES ("
+                        "'" + backupDestiny.local + "',"
+                        "'" + backupDestiny.host + "',"
+                        "'" + backupDestiny.options + "',"
+                        "'" + backupDestiny.target + "',"
+                        "DATETIME(STRFTIME('%s','now'), 'unixepoch'),"
+                        "(SELECT MAX(id) FROM backups)"
+                    ");"
                 ;
+
+        // Convert to char*
+            systemDB.conGen.querySQL = new char[sql2.length()];
+            for(int a = 0; a < sql2.length(); a++)
+            {
+                systemDB.conGen.querySQL[a] = sql2[a];
             }
 
-        sql2 = sql2 + backupDestiny.local + ","
-            + backupDestiny.host + ","
-            + backupDestiny.options + ","
-            + backupDestiny.target + ","
-        ;
+        // Execute SQL statement
+            systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, NULL, 0, & systemDB.conGen.error);
+            if (systemDB.conGen.response != SQLITE_OK)
+            {
+                fprintf(stderr, "--Error--: %s\n", systemDB.conGen.error);
+                sqlite3_free(systemDB.conGen.error);
+                is_ok = false;
+            }
+            else
+            {
+                fprintf(stdout, "--Ready Target Destiny--\n");
+                is_ok = true;
+            }
 
-        if(backupDestiny.local == 'n')
+        // Delete dynamic memory
+            delete[] systemDB.conGen.querySQL;
+
+    // Destiny user
+        if(backupDestiny.local == "n")
         {
-            sql2 = sql2 + uDest.username + ","
-                + uDest.password + ","
-            ;
-        }*/
+            // Create SQL string type statement
+                sql2 = "INSERT INTO users (user, password, freg, id_target) "
+                    "VALUES ("
+                        "'" + uDest.username + "',"
+                        "'" + uDest.password + "',"
+                        "DATETIME(STRFTIME('%s','now'), 'unixepoch'),"
+                        "(SELECT MAX(id) FROM targets)"
+                    ");"
+                ;
 
+            // Convert to char*
+                systemDB.conGen.querySQL = new char[sql2.length()];
+                for(int a = 0; a < sql2.length(); a++)
+                {
+                    systemDB.conGen.querySQL[a] = sql2[a];
+                }
 
-    // Users
+            // Execute SQL statement
+                systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, NULL, 0, & systemDB.conGen.error);
+                if (systemDB.conGen.response != SQLITE_OK)
+                {
+                    fprintf(stderr, "--Error--: %s\n", systemDB.conGen.error);
+                    sqlite3_free(systemDB.conGen.error);
+                    is_ok = false;
+                }
+                else
+                {
+                    fprintf(stdout, "--Ready Target user: objetive--\n");
+                    is_ok = true;
+                }
 
-
+            // Delete dynamic memory
+                delete[] systemDB.conGen.querySQL;
+        }
 
     if(is_ok)
         return true;

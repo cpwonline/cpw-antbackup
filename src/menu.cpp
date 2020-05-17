@@ -43,12 +43,21 @@ void menu::listItems ()
 
 void menu::handleItems()
 {
+	backups *bakGen = new backups;
 	switch(currentItem)
 	{
 		case 1:
 			std::cout << "\nOpción 1\n";
 			break;
 		case 2:
+			if(true)
+			{
+				std::cout << "Mandó True" << "\n";
+			}
+			else
+			{
+				std::cout << "Mandó false" << "\n";
+			}
 			break;
 		case 3:
 			break;
@@ -57,5 +66,6 @@ void menu::handleItems()
 		case 5:
 			break;
 	}
+	delete bakGen;
 }
 

@@ -1,8 +1,8 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*-  */
 /*
- * main.cc
- * Copyright (C) 2019 CPW Online <cpwonline@otmail.com>
- * 
+ * backups.cpp
+ * Copyright (C) 2019 Jose Felix Rivas Carrasco <cpwonline@hotmail.com>
+ *
  * net.cpwonline.cpw-antbackup is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or
@@ -17,20 +17,18 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <iostream>
-#include "menu.h"
 #include "backups.h"
 
-int main()
+void backups::hola()
 {
-	menu menuGen;
-	menuGen.listItems();
-	menuGen.handleItems();
-
-	backups *bakGen = new backups;
-	bakGen->hola();
-	delete bakGen;
-	
-	return 0;
+	std::cout << "\nObjetivo: ";
+	std::cin >> target;
+	std::cout << "\nDestino: ";
+	std::cin >> destiny;
+	std::cout << "\n¿Compresión? (y/n): ";
+	std::cin >> compression;
+	std::cout << "\nObjetivo: ";
+	std::cin >> target;
+	return true;
 }
 

@@ -1,8 +1,8 @@
 /* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*-  */
 /*
- * main.cc
- * Copyright (C) 2019 CPW Online <cpwonline@otmail.com>
- * 
+ * backups.h
+ * Copyright (C) 2019 Jose Felix Rivas Carrasco <cpwonline@hotmail.com>
+ *
  * net.cpwonline.cpw-antbackup is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation, either version 3 of the License, or
@@ -17,20 +17,36 @@
  * with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#ifndef _BACKUPS_H_
+#define _BACKUPS_H_
+
 #include <iostream>
-#include "menu.h"
-#include "backups.h"
+#include <string>
 
-int main()
+class backups
 {
-	menu menuGen;
-	menuGen.listItems();
-	menuGen.handleItems();
+	public:
+		void hola();
 
-	backups *bakGen = new backups;
-	bakGen->hola();
-	delete bakGen;
-	
-	return 0;
-}
+		void saludar();
+
+	protected:
+
+	private:
+		struct time
+		{
+			short hour, minute, second;
+		};
+		struct date
+		{
+			short day, month, year;
+		};
+		std::string target;
+		std::string destiny;
+		bool compression;
+		time timeBackup;
+		date dateBackup;
+};
+
+#endif // _BACKUPS_H_
 

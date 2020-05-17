@@ -14,7 +14,9 @@ bin_PROGRAMS = net_cpwonline_cpw_antbackup
 net_cpwonline_cpw_antbackup_SOURCES = \
 	main.cpp \
 	menu.cpp \
-	menu.h
+	menu.h \
+	backups.cpp \
+	backups.h
 
 net_cpwonline_cpw_antbackup_LDFLAGS = 
 

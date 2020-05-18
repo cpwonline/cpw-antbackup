@@ -1,0 +1,16 @@
+# depslib dependency file v1.0
+1589752990 source:/run/media/josefelixrc/b6c3fdac-55db-472f-b8f7-ca5613fd4123/josefelixrc/Documents/projects_bussines/cpwonline/2-Projects/Desktop_apps/cpw-antbackup/net.cpwonline.cpw-antbackup/src/backups.cpp
+	"backups.h"
+
+1589753050 /run/media/josefelixrc/b6c3fdac-55db-472f-b8f7-ca5613fd4123/josefelixrc/Documents/projects_bussines/cpwonline/2-Projects/Desktop_apps/cpw-antbackup/net.cpwonline.cpw-antbackup/include/backups.h
+	<iostream>
+	<string>
+
+1589753081 source:/run/media/josefelixrc/b6c3fdac-55db-472f-b8f7-ca5613fd4123/josefelixrc/Documents/projects_bussines/cpwonline/2-Projects/Desktop_apps/cpw-antbackup/net.cpwonline.cpw-antbackup/src/main.cpp
+	<iostream>
+	"menu.h"
+	"backups.h"
+
+1589752807 /run/media/josefelixrc/b6c3fdac-55db-472f-b8f7-ca5613fd4123/josefelixrc/Documents/projects_bussines/cpwonline/2-Projects/Desktop_apps/cpw-antbackup/net.cpwonline.cpw-antbackup/include/menu.h
+	"backups.h"
+

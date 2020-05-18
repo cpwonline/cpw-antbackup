@@ -30,14 +30,11 @@ void menu::handleItems()
 			std::cout << "\nOpción 1\n";
 			break;
 		case 2:
-			if(bakGen->data())
-			{
-				std::cout << "Mandó True" << "\n";
-			}
-			else
-			{
-				std::cout << "Mandó false" << "\n";
-			}
+			bakGen->data();
+			if(bakGen->add())
+                std::cout << "\n Se guardó su backup con exito.\n";
+            else
+                std::cout << "\n Hubo un errr al guardar el backup.\n";
 			break;
 		case 3:
 			break;

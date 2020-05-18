@@ -25,3 +25,7 @@ void backups::data()
 	std::cout << "\n- Repetición: ";
 	std::cin >> repeat;
 }
+bool backups::add()
+{
+
+}

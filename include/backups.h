@@ -10,7 +10,7 @@ class backups
 {
 	public:
 		void data();
-		bool add();
+		bool addRecord();
 
 	protected:
 
@@ -25,10 +25,10 @@ class backups
 		};
 		std::string target;
 		std::string destiny;
-		bool compression, repeat;
+		char compression, repeat;
 		time timeBackup;
 		date dateBackup;
-		ofstream *ofileGen;
+		std::ofstream *ofileGen;
 };
 
 #endif // _BACKUPS_H_

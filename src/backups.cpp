@@ -7,9 +7,6 @@ void backups::data()
 	std::cin >> target;
 	std::cout << "\n- Destino: ";
 	std::cin >> destiny;
-	std::cout << "\n- Compresión (y/n): ";
-	std::cin >> compression;
-	std::cout << "\n\nFecha y hora";
 	std::cout << "\n- Día: ";
 	std::cin >> dateBackup.day;
 	std::cout << "\n- Mes: ";
@@ -24,24 +21,27 @@ void backups::data()
 	std::cin >> timeBackup.second;
 	std::cout << "\n- Repetición: ";
 	std::cin >> repeat;
+	std::cout << "\n- Compresión (y/n): ";
+	std::cin >> compression;
 }
-bool backups::add()
+bool backups::addRecord()
 {
-    ofileGen = new ofstream;
+    ofileGen = new std::ofstream;
     bool is_ok = true;
+
+    ofileGen->open("data/backupsList.db",std::ios::app);
 
     if(ofileGen->is_open())
     {
-        ofileGen->open("../data/backupsList.db");
-        ofileGen << target << "," << destiny << "," << compression;
-        ofileGen << "," << dateBackup.day << "," << dateBackup.month;
-        ofileGen << "," << dateBackup.year << "," << timeBackup.hour;
-        ofileGen << "," << timeBackup.minute << "," << timeBackup.second;
-        ofileGen << "," << repeat << "\n";
+        *ofileGen << target << "," << destiny;
+        *ofileGen << "," << dateBackup.day << "," << dateBackup.month;
+        *ofileGen << "," << dateBackup.year << "," << timeBackup.hour;
+        *ofileGen << "," << timeBackup.minute << "," << timeBackup.second;
+        *ofileGen << "," << repeat << "," << compression << "\n";
     }
     else
         is_ok = false;
-        s
+
     ofileGen->close();
     delete ofileGen;
 

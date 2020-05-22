@@ -27,14 +27,14 @@ void menu::handleItems()
 	switch(currentItem)
 	{
 		case 1:
-			std::cout << "\nOpción 1\n";
+            bakGen->viewRecords();
 			break;
 		case 2:
 			bakGen->data();
-			if(bakGen->add())
+			if(bakGen->addRecord())
                 std::cout << "\n Se guardó su backup con exito.\n";
             else
-                std::cout << "\n Hubo un errr al guardar el backup.\n";
+                std::cout << "\n Hubo un error al guardar el backup.\n";
 			break;
 		case 3:
 			break;

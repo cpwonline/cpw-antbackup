@@ -50,32 +50,74 @@ bool backups::addRecord()
     else
         return false;
 }
+static int selectCb(void *nada, int argc, char **argv, char **colNames){
+   int i;
+
+   for(i=0; i<argc; i++){
+      printf("%s => %s\n", colNames[i], argv[i]);
+   }
+   printf("\n");
+   return 0;
+}
 void backups::viewRecords()
 {
+    std::cout << "\n* Showing records\n";
+    sqlite3 *db;
+    char *error = 0;
+    int res;
+    char *sql;
 
+    // Open database
+        res = sqlite3_open(nameDB, &db);
+        if (res)
+        {
+            fprintf(stderr, "Error to open database: %s\n", sqlite3_errmsg(db));
+            exit(0);
+        }
+        else
+        {
+            fprintf(stderr, "Database OK\n");
+        }
+
+    // Create SQL statement
+        sql = "SELECT * FROM backups;";
+
+    // Execute SQL statement
+        res = sqlite3_exec(db, sql, selectCb, 0, &error);
+        if (res != SQLITE_OK)
+        {
+            fprintf(stderr, "Error: %s\n", error);
+            sqlite3_free(error);
+        }
+        else
+        {
+            fprintf(stdout, "Ready. \n");
+        }
+
+        sqlite3_close(db);
 }
 void backups::configureDB()
 {
     // Setting up
-        std::cout "\n* Setting up database.\n"
+        std::cout << "\n* Setting up database.\n";
         sqlite3 *db;
         char *error = 0;
         int res;
         char *sql;
 
-        res = sqlite3_open("cpw_ant_backup.db", &db);
+        res = sqlite3_open(nameDB, &db);
         if (res)
         {
-            fprintf(stderr, "\nNo se puede abrir la base de datos: %s\n", sqlite3_errmsg(db));
+            fprintf(stderr, "No se puede abrir la base de datos: %s\n", sqlite3_errmsg(db));
             exit(0);
         }
         else
         {
-            fprintf(stderr, "\nBase de datos OK\n");
+            fprintf(stderr, "Base de datos OK\n");
         }
     // Query
         sql = "CREATE TABLE backups ("
-            "id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+            "id INT NOT NULL PRIMARY KEY, "
             "target VARCHAR(3000) NOT NULL, "
             "destiny VARCHAR(3000) NOT NULL, "
             "compression INT NOT NULL, "
@@ -87,12 +129,12 @@ void backups::configureDB()
         res = sqlite3_exec(db, sql, NULL, 0, &error);
         if (res != SQLITE_OK)
         {
-            fprintf(stderr, "\nError: %s\n", error);
+            fprintf(stderr, "Error: %s\n", error);
             sqlite3_free(error);
         }
         else
         {
-            fprintf(stdout, "\nBase de datos y tabla creada.\n");
+            fprintf(stdout, "Base de datos y tabla creada.\n");
         }
 
     sqlite3_close(db);

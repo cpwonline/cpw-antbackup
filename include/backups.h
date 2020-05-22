@@ -10,6 +10,7 @@
 class backups
 {
 	public:
+        backups() : nameDB("cpw_cantbackup.db"){}
 		void data();
 		bool addRecord();
 		void viewRecords();
@@ -32,6 +33,7 @@ class backups
 		time timeBackup;
 		date dateBackup;
 		std::ofstream *ofileGen;
+		const char* nameDB;
 };
 
 #endif // _BACKUPS_H_

@@ -3,6 +3,8 @@
 [D-d]ebug
 *.cbp
 *.layout
+*.depend
 *~
 *anjuta*
 *.cache
+*.db

@@ -24,6 +24,7 @@ void menu::listItems ()
 void menu::handleItems()
 {
 	backups *bakGen = new backups;
+	bakGen->configureDB();
 	switch(currentItem)
 	{
 		case 1:

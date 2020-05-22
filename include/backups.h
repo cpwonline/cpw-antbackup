@@ -5,12 +5,15 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include "sqlite3.h"
 
 class backups
 {
 	public:
 		void data();
 		bool addRecord();
+		void viewRecords();
+		void configureDB();
 
 	protected:
 

@@ -9,14 +9,25 @@ void menu::listItems ()
 	{
 		std::cout << "1) Ver lista de respaldos \n";
 		std::cout << "2) Agregar un respaldo \n";
-		std::cout << "3) quitar un respaldo \n";
+		std::cout << "3) Eliminar un respaldo \n";
 		std::cout << "4) Editar un respaldo \n";
 		std::cout << "5) Configuraciones \n";
 		std::cout << "\nSu opción: ";
 		std::cin >> option;
-		if(option < 1 || option > 5)
+
+		switch(option)
+		{
+            case 5:
+                std::cout << "\n\n-Configuracions:\n";
+                std::cout << "6) Reiniciar base de datos:\n";
+                std::cout << "\nSu opción: ";
+                std::cin >> option;
+                break;
+		}
+
+		if(option < 1 || option > 6)
 			std::cout << "\nDisculpe, la opción es inválida, intente nuevamente.\n";
-	}while(option < 1 || option > 5);
+	}while(option < 1 || option > 6);
 
 	currentItem = option;
 }
@@ -43,6 +54,9 @@ void menu::handleItems()
 			break;
 		case 5:
 			break;
+        case 6:
+            bakGen->restartDB();
+            break;
 	}
 	delete bakGen;
 }

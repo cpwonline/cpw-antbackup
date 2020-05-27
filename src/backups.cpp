@@ -26,24 +26,48 @@ void backups::data()
 }
 bool backups::addRecord()
 {
-    ofileGen = new std::ofstream;
-    bool is_ok = true;
+    std::cout << "\nAdding a record\n";
 
-    ofileGen->open("data/backupsList.db",std::ios::app);
+    sqlite3 *db;
+    char *error = 0;
+    int res;
+    char *sql;
 
-    if(ofileGen->is_open())
-    {
+    // Open database
+        res = sqlite3_open(nameDB, &db);
+        if (res)
+        {
+            fprintf(stderr, "Error to open database: %s\n", sqlite3_errmsg(db));
+            exit(0);
+        }
+        else
+        {
+            fprintf(stderr, "Database OK\n");
+        }
+    // Create SQL statement
+        sql = "INSERT INTO events VALUES (DATETIME(STRFTIME('%s','now'), 'unixepoch'));";
+
+    // Execute SQL statement
+        res = sqlite3_exec(db, sql, NULL, 0, &error);
+        if (res != SQLITE_OK)
+        {
+            fprintf(stderr, "Error: %s\n", error);
+            sqlite3_free(error);
+            is_ok = false;
+        }
+        else
+        {
+            fprintf(stdout, "Query is OK\n");
+            bool is_ok = true;
+        }
+
+    sqlite3_close(db);
+
         *ofileGen << target << "," << destiny;
         *ofileGen << "," << dateBackup.day << "," << dateBackup.month;
         *ofileGen << "," << dateBackup.year << "," << timeBackup.hour;
         *ofileGen << "," << timeBackup.minute << "," << timeBackup.second;
         *ofileGen << "," << repeat << "," << compression << "\n";
-    }
-    else
-        is_ok = false;
-
-    ofileGen->close();
-    delete ofileGen;
 
     if(is_ok)
         return true;

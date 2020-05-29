@@ -97,15 +97,6 @@ bool backups::addRecord()
     else
         return false;
 }
-static int selectCb(void *nada, int argc, char **argv, char **colNames){
-   int i;
-
-   for(i=0; i<argc; i++){
-      printf("%s => %s\n", colNames[i], argv[i]);
-   }
-   printf("\n");
-   return 0;
-}
 void backups::viewRecords()
 {
     std::cout << "\n* Showing records\n";
@@ -129,16 +120,27 @@ void backups::viewRecords()
     // Create SQL statement
         sql = "SELECT * FROM backups;";
 
+    // Lambda function
+        auto handleRecords = [](void *nada, int argc, char **argv, char **colNames) -> int
+        {
+            std::cout << "\n";
+            for(int i=0; i<argc; i++){
+                printf("%s -> %s\n", colNames[i], argv[i]);
+            }
+            printf("\n");
+            return 0;
+        };
+
     // Execute SQL statement
-        res = sqlite3_exec(db, sql, selectCb, 0, &error);
+        res = sqlite3_exec(db, sql, handleRecords, 0, &error);
         if (res != SQLITE_OK)
         {
-            fprintf(stderr, "Error: %s\n", error);
+            fprintf(stderr, "--Error--: %s\n", error);
             sqlite3_free(error);
         }
         else
         {
-            fprintf(stdout, "Ready. \n");
+            fprintf(stdout, "--Ready--. \n");
         }
 
         sqlite3_close(db);

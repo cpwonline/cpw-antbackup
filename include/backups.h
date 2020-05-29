@@ -9,12 +9,12 @@
 class backups
 {
 	public:
-        backups() : nameDB("cpw_cantbackup.db"){}
+        backups() : nameDB("cpw_antbackup.db"){}
 		void data();
 		bool addRecord();
 		void viewRecords();
 		void configureDB();
-
+		bool restartDB();
 	protected:
 
 	private:
@@ -31,7 +31,6 @@ class backups
 		char compression, repeat;
 		time timeBackup;
 		date dateBackup;
-		std::ofstream *ofileGen;
 		const char* nameDB;
 };
 

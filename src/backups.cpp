@@ -32,7 +32,7 @@ bool backups::addRecord()
     char *error = 0;
     int res;
     char *sql;
-    bool is_ok;
+    bool is_ok = false;
     // Open database
         res = sqlite3_open(nameDB, &db);
         if (res)
@@ -45,12 +45,21 @@ bool backups::addRecord()
             fprintf(stderr, "Database OK\n");
         }
     // Create SQL statement in string type
-
         std::string sql2;
-        sql2 = "INSERT INTO backups (target, destiny,  freg) "
+        sql2 = "INSERT INTO backups (target, destiny, compression, repeat, datetimeB, dateFreg) "
             "VALUES ("
                 "'" + target + "',"
                 "'" + destiny + "',"
+                "'" + compression + "',"
+                "'" + repeat + "',"
+                "'"
+                    + std::to_string(dateBackup.day) + "-"
+                    + std::to_string(dateBackup.month) + "-"
+                    + std::to_string(dateBackup.year) + " "
+                    + std::to_string(timeBackup.hour) + ":"
+                    + std::to_string(timeBackup.minute) + ":"
+                    + std::to_string(timeBackup.second) +
+                "',"
                 "DATETIME(STRFTIME('%s','now'), 'unixepoch')"
             ");"
         ;
@@ -58,7 +67,13 @@ bool backups::addRecord()
         std::cout << "\n SQL2 = " << sql2 << ", size: " << sql2.length() << "\n";
 
     // Convert to char*
-/*
+        sql = new char[sql2.length()];
+        for(int a = 0; a < sql2.length(); a++)
+        {
+            sql[a] = sql2[a];
+        }
+        std::cout << "\n SQL = " << sql << "\n";
+
     // Execute SQL statement
         res = sqlite3_exec(db, sql, NULL, 0, &error);
         if (res != SQLITE_OK)
@@ -72,8 +87,10 @@ bool backups::addRecord()
             fprintf(stdout, "Query is OK\n");
             is_ok = true;
         }
-*/
+
     sqlite3_close(db);
+
+    delete[] sql;
 
     if(is_ok)
         return true;
@@ -152,7 +169,8 @@ void backups::configureDB()
                 "destiny VARCHAR(3000) NOT NULL,"
                 "compression CHAR (1) NOT NULL,"
                 "repeat CHAR (1) NOT NULL,"
-                "freg datetime NOT NULL"
+                "datetimeB DATETIME NOT NULL,"
+                "dateFreg DATETIME NOT NULL"
             ");"
         ;
 

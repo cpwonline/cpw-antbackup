@@ -3,25 +3,25 @@
 void backups::data()
 {
 	std::cout << "\n\nGeneral";
-	std::cout << "\n- Objetivo: ";
+	std::cout << "\n- Target: ";
 	std::cin >> target;
-	std::cout << "\n- Destino: ";
+	std::cout << "\n- Destiny: ";
 	std::cin >> destiny;
-	std::cout << "\n- Día: ";
+	std::cout << "\n- Day: ";
 	std::cin >> dateBackup.day;
-	std::cout << "\n- Mes: ";
+	std::cout << "\n- Month: ";
 	std::cin >> dateBackup.month;
-	std::cout << "\n- Año: ";
+	std::cout << "\n- Year: ";
 	std::cin >> dateBackup.year;
-	std::cout << "\n- Hora: ";
+	std::cout << "\n- Hour: ";
 	std::cin >> timeBackup.hour;
-	std::cout << "\n- Minuto: ";
+	std::cout << "\n- Minute: ";
 	std::cin >> timeBackup.minute;
-	std::cout << "\n- Segundo: ";
+	std::cout << "\n- Second: ";
 	std::cin >> timeBackup.second;
-	std::cout << "\n- Repetición (y/n): ";
+	std::cout << "\n- Repeat (y/n): ";
 	std::cin >> repeat;
-	std::cout << "\n- Compresión (y/n): ";
+	std::cout << "\n- Compression (y/n): ";
 	std::cin >> compression;
 }
 bool backups::addRecord()
@@ -84,7 +84,7 @@ bool backups::addRecord()
         }
         else
         {
-            fprintf(stdout, "Query is OK\n");
+            fprintf(stdout, "Ready\n");
             is_ok = true;
         }
 
@@ -155,12 +155,12 @@ void backups::configureDB()
         res = sqlite3_open(nameDB, &db);
         if (res)
         {
-            fprintf(stderr, "No se puede abrir la base de datos: %s\n", sqlite3_errmsg(db));
+            fprintf(stderr, "Error to open database: %s\n", sqlite3_errmsg(db));
             exit(0);
         }
         else
         {
-            fprintf(stderr, "Base de datos OK\n");
+            fprintf(stderr, "Databse is OK\n");
         }
     // Query
         sql = "CREATE TABLE backups ("
@@ -183,7 +183,7 @@ void backups::configureDB()
         }
         else
         {
-            fprintf(stdout, "Base de datos y tabla creada.\n");
+            fprintf(stdout, "Database and table created.\n");
         }
 
     sqlite3_close(db);
@@ -200,12 +200,12 @@ bool backups::restartDB()
         res = sqlite3_open(nameDB, &db);
         if (res)
         {
-            fprintf(stderr, "No se puede abrir la base de datos: %s\n", sqlite3_errmsg(db));
+            fprintf(stderr, "Error to open database: %s\n", sqlite3_errmsg(db));
             exit(0);
         }
         else
         {
-            fprintf(stderr, "Base de datos OK\n");
+            fprintf(stderr, "Database is OK\n");
         }
     // Query
         sql = "DROP TABLE backups;";
@@ -219,7 +219,7 @@ bool backups::restartDB()
         }
         else
         {
-            fprintf(stdout, "Tabla backups eliminada.\n");
+            fprintf(stdout, "Backups table was deleted.\n");
         }
 
     sqlite3_close(db);

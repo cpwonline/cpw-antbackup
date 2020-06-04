@@ -10,6 +10,28 @@ backups::~backups()
 }
 void backups::data()
 {
+    bool err = false;
+    do
+    {
+        std::cout << "\n- Backup type (files/database): ";
+        std::cin >> type;
+        switch(type)
+        {
+            case "files":
+            {
+                break;
+            }
+            case "database":
+            {
+                break;
+            }
+            default:
+                std::cout << "\n --Backup type wrong--\n";
+                break;
+        }
+    }
+    while(type != "files" && type != "database");
+
 	std::cout << "\n\n* Recolecting data";
 	std::cout << "\n- Title: ";
 	std::cin >> title;
@@ -17,8 +39,6 @@ void backups::data()
 	std::cin >> target;
 	std::cout << "\n- Destiny: ";
 	std::cin >> destiny;
-	std::cout << "\n- Type (directory/file/database): ";
-	std::cin >> type;
 	std::cout << "\n- Local ('y/n'): ";
 	std::cin >> local;
 	std::cout << "\n- Day: ";
@@ -142,17 +162,41 @@ void backups::configureDB()
             fprintf(stderr, "--Database OK--\n");
         }
     // SQL Query
-        genDB.conGen.querySQL = "CREATE TABLE backups ("
+        genDB.conGen.querySQL = "CREATE TABLE IF NOT EXISTS backups ("
                 "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
                 "title VARCHAR(50) NOT NULL,"
-                "target VARCHAR(3000) NOT NULL,"
-                "destiny VARCHAR(3000) NOT NULL,"
                 "type VARCHAR(10) NOT NULL,"
-                "local CHAR(1) NOT NULL,"
                 "compression CHAR (1) NOT NULL,"
                 "repeat CHAR (1) NOT NULL,"
-                "datetimeB DATETIME NOT NULL,"
-                "dateFreg DATETIME NOT NULL"
+                "timeRun DATETIME NOT NULL,"
+                "freg DATETIME NOT NULL"
+            ");"
+            "CREATE TABLE IF NOT EXISTS targets("
+                "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+                "target VARCHAR(3000) NOT NULL,"
+                "local CHAR(1) NOT NULL,"
+                "host VARCHAR(50) NOT NULL,"
+                "options VARCHAR(3000) NOT NULL,"
+                "freg DATETIME NOT NULL,"
+                "id_backup INTEGER,"
+                "FOREIGN KEY(id_backup) REFERENCES backups(id)"
+            ");"
+            "CREATE TABLE IF NOT EXISTS users("
+                "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+                "user VARCHAR(50) NOT NULL,"
+                "password VARCHAR(50) NOT NULL,"
+                "freg DATETIME NOT NULL,"
+                "id_target INTEGER,"
+                "FOREIGN KEY(id_target) REFERENCES targets(id),"
+                "id_database INTEGER,"
+                "FOREIGN KEY(id_database) REFERENCES databases(id)"
+            ");"
+            "CREATRE TABLE IF NOT EXISTS databases("
+                "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+                "name VARCHAR(50) NOT NULL,"
+                "freg DATETIME NOT NULL,"
+                "id_backup INTEGER,"
+                "FOREIGN KEY(id_backup) REFERENCES backups(id)"
             ");"
         ;
 

@@ -117,6 +117,16 @@ bool backups::addRecord()
 
     bool is_ok = false;
 
+
+    // Handle records
+        //std::string lastID = std::string;
+        auto viewLastID = [](void *nada, int argc, char **argv, char **colNames) -> int
+        {
+            std::cout << "\nEl ultimo id es: " << argv[0] << "\n";
+            //sprintf(lastID, argv[0]);
+            return 0;
+        };
+
     // Backups
         // Create SQL string type statement
             std::string sql2;
@@ -164,14 +174,7 @@ bool backups::addRecord()
 
         // Query the last ID
             // Create SQL statement
-                systemDB.conGen.querySQL = "SELECT id FROM backups ORDER BY id LIMIT 1;";
-
-            // Handle records
-                auto viewLastID = [](void *nada, int argc, char **argv, char **colNames) -> int
-                {
-                    std::cout << "\nEl ultimo id es: " << argv[0] << "\n";
-                    return 0;
-                };
+                systemDB.conGen.querySQL = "SELECT id FROM backups ORDER BY id DESC LIMIT 1;";
 
             // Execute SQL statement
                 sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, viewLastID, 0,& systemDB.conGen.error);
@@ -179,33 +182,78 @@ bool backups::addRecord()
 
 
     // Targets or Databases
-        /*switch(type)
+        /*if(type == "files")
         {
-            case "files":
-            {
-                sql2 = sql2 + "INSERT INTO targets ()"
-                    backupObjetive.local + ","
+            sql2 = "INSERT INTO targets (local, host, options, target, freg, id_backup)"
+                " VALUES ("
+                    + backupObjetive.local + ","
                     + backupObjetive.host + ","
                     + backupObjetive.options + ","
                     + backupObjetive.target + ","
-                ;
+                    "DATETIME(STRFTIME('%s','now'), 'unixepoch'),"
+                    + last
+                ");"
+            ;
 
-                if(backupObjetive.local == 'n')
-                {
-                    sql2 = sql2 + uObj.username + ",";
-                        + uObj.password + ","
-                    ;
-                }
-                break;
-            }
-            case "database":
+            if(backupObjetive.local == 'n')
             {
-                sql2 = sql2 + backupDatabase.name + ","
-                sql2 = sql2 + uDB.username + ","
-                sql2 = sql2 + uDB.password + ","
-                break;
+                sql2 = sql2 + uObj.username + ",";
+                    + uObj.password + ","
+                ;
             }
         }
+        else if(type == "database")
+        {
+            sql2 = sql2 + backupDatabase.name + ","
+            sql2 = sql2 + uDB.username + ","
+            sql2 = sql2 + uDB.password + ","
+        }
+        // Create SQL string type statement
+            std::string sql2;
+            sql2 = "INSERT INTO backups (type, title, compression, repeat, timeRun, freg)"
+                " VALUES ("
+                    "'" + type + "',"
+                    "'" + title + "',"
+                    "'" + compression + "',"
+                    "'" + repeat + "',"
+                    "'"
+                        + std::to_string(backupDate.day) + "-"
+                        + std::to_string(backupDate.month) + "-"
+                        + std::to_string(backupDate.year) + " "
+                        + std::to_string(backupTime.hour) + ":"
+                        + std::to_string(backupTime.minute) + ":"
+                        + std::to_string(backupTime.second) +
+                    "', "
+                    "DATETIME(STRFTIME('%s','now'), 'unixepoch')"
+                ");"
+            ;
+
+        // Convert to char*
+            systemDB.conGen.querySQL = new char[sql2.length()];
+            for(int a = 0; a < sql2.length(); a++)
+            {
+                systemDB.conGen.querySQL[a] = sql2[a];
+            }
+
+        // Execute SQL statement
+            systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, NULL, 0, & systemDB.conGen.error);
+            if (systemDB.conGen.response != SQLITE_OK)
+            {
+                fprintf(stderr, "--Error--: %s\n", systemDB.conGen.error);
+                sqlite3_free(systemDB.conGen.error);
+                is_ok = false;
+            }
+            else
+            {
+                fprintf(stdout, "--Ready--\n");
+                is_ok = true;
+            }
+
+
+
+
+            */
+            /*
 
         sql2 = sql2 + backupDestiny.local + ","
             + backupDestiny.host + ","
@@ -276,97 +324,54 @@ void backups::configureDB()
         {
             fprintf(stderr, "--Database OK--\n");
         }
-    // Backups
-        // SQL Query
-            systemDB.conGen.querySQL = "CREATE TABLE IF NOT EXISTS backups ("
-                    "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
-                    "title VARCHAR(50) NOT NULL,"
-                    "type VARCHAR(10) NOT NULL,"
-                    "compression CHAR (1) NOT NULL,"
-                    "repeat CHAR (1) NOT NULL,"
-                    "timeRun DATETIME NOT NULL,"
-                    "freg DATETIME NOT NULL"
-                ");"
-            ;
+    // SQL Query
+        systemDB.conGen.querySQL = "CREATE TABLE IF NOT EXISTS backups ("
+                "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+                "title VARCHAR(50) NOT NULL,"
+                "type VARCHAR(10) NOT NULL,"
+                "compression CHAR (1) NOT NULL,"
+                "repeat CHAR (1) NOT NULL,"
+                "timeRun DATETIME NOT NULL,"
+                "freg DATETIME NOT NULL"
+            ");"
+            "CREATE TABLE IF NOT EXISTS targets("
+                "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+                "target VARCHAR(3000) NOT NULL,"
+                "local CHAR(1) NOT NULL,"
+                "host VARCHAR(50) NOT NULL,"
+                "options VARCHAR(3000) NOT NULL,"
+                "freg DATETIME NOT NULL,"
+                "id_backup INTEGER,"
+                "FOREIGN KEY(id_backup) REFERENCES backups(id)"
+            ");"
+            "CREATE TABLE IF NOT EXISTS databases("
+                "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+                "name VARCHAR(50) NOT NULL,"
+                "freg DATETIME NOT NULL,"
+                "id_backup INTEGER,"
+                "FOREIGN KEY(id_backup) REFERENCES backups(id)"
+            ");"
+            "CREATE TABLE IF NOT EXISTS users("
+                "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
+                "user VARCHAR(50) NOT NULL,"
+                "password VARCHAR(50) NOT NULL,"
+                "freg DATETIME NOT NULL,"
+                "id_target INTEGER,"
+                "id_database INTEGER,"
+                "FOREIGN KEY(id_target) REFERENCES targets(id),"
+                "FOREIGN KEY(id_database) REFERENCES databases(id)"
+            ");"
+        ;
 
-        // Execute SQL statement
-            systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, NULL, 0,& systemDB.conGen.error);
-            if (systemDB.conGen.response != SQLITE_OK)
-            {
-                fprintf(stderr, "--Error--: %s\n", systemDB.conGen.error);
-                sqlite3_free(systemDB.conGen.error);
-            }
-            else
-                fprintf(stdout, "--Table backups created--.\n");
-
-    // Targets
-        // SQL Query
-            systemDB.conGen.querySQL = "CREATE TABLE IF NOT EXISTS targets("
-                    "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
-                    "target VARCHAR(3000) NOT NULL,"
-                    "local CHAR(1) NOT NULL,"
-                    "host VARCHAR(50) NOT NULL,"
-                    "options VARCHAR(3000) NOT NULL,"
-                    "freg DATETIME NOT NULL,"
-                    "id_backup INTEGER,"
-                    "FOREIGN KEY(id_backup) REFERENCES backups(id)"
-                ");"
-            ;
-
-        // Execute SQL statement
-            systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, NULL, 0,& systemDB.conGen.error);
-            if (systemDB.conGen.response != SQLITE_OK)
-            {
-                fprintf(stderr, "--Error--: %s\n", systemDB.conGen.error);
-                sqlite3_free(systemDB.conGen.error);
-            }
-            else
-                fprintf(stdout, "--Table targets created--.\n");
-
-    // Databases
-        // SQL Query
-            systemDB.conGen.querySQL = "CREATE TABLE IF NOT EXISTS databases("
-                    "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
-                    "name VARCHAR(50) NOT NULL,"
-                    "freg DATETIME NOT NULL,"
-                    "id_backup INTEGER,"
-                    "FOREIGN KEY(id_backup) REFERENCES backups(id)"
-                ");"
-            ;
-
-        // Execute SQL statement
-            systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, NULL, 0,& systemDB.conGen.error);
-            if (systemDB.conGen.response != SQLITE_OK)
-            {
-                fprintf(stderr, "--Error--: %s\n", systemDB.conGen.error);
-                sqlite3_free(systemDB.conGen.error);
-            }
-            else
-                fprintf(stdout, "--Table databases created--.\n");
-
-    // Users
-        // SQL Query
-            systemDB.conGen.querySQL = "CREATE TABLE IF NOT EXISTS users("
-                    "id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,"
-                    "user VARCHAR(50) NOT NULL,"
-                    "password VARCHAR(50) NOT NULL,"
-                    "freg DATETIME NOT NULL,"
-                    "id_target INTEGER,"
-                    "id_database INTEGER,"
-                    "FOREIGN KEY(id_target) REFERENCES targets(id),"
-                    "FOREIGN KEY(id_database) REFERENCES databases(id)"
-                ");"
-            ;
-
-        // Execute SQL statement
-            systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, NULL, 0,& systemDB.conGen.error);
-            if (systemDB.conGen.response != SQLITE_OK)
-            {
-                fprintf(stderr, "--Error--: %s\n", systemDB.conGen.error);
-                sqlite3_free(systemDB.conGen.error);
-            }
-            else
-                fprintf(stdout, "--Table users created--.\n");
+    // Execute SQL statement
+        systemDB.conGen.response = sqlite3_exec(systemDB.conGen.objSQLite, systemDB.conGen.querySQL, NULL, 0,& systemDB.conGen.error);
+        if (systemDB.conGen.response != SQLITE_OK)
+        {
+            fprintf(stderr, "--Error--: %s\n", systemDB.conGen.error);
+            sqlite3_free(systemDB.conGen.error);
+        }
+        else
+            fprintf(stdout, "--Database and tables created--.\n");
 
 }
 bool backups::restartDB()

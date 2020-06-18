@@ -21,7 +21,7 @@ void menu::listItems ()
                 std::cout << "\n\n-Others:\n";
                 std::cout << "6) Restart database\n";
                 std::cout << "7) Backups status\n";
-                std::cout << "8) Make every backup now\n";
+                std::cout << "8) Make every backup now (force)\n";
                 std::cout << "\nYour choice: ";
                 std::cin >> option;
                 break;

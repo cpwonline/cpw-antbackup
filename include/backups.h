@@ -58,7 +58,7 @@ class backups
             {
                 struct info
                 {
-                    info();
+                    //info();
                     const char* nameDB;
                 };
                 struct connection
@@ -82,6 +82,11 @@ class backups
             short id;
             std::string type, title;
             char compression, repeat;
+
+            targets backupObjetive;
+            targets backupDestiny;
+            datetime::date backupDate;
+            datetime::time backupTime;
 };
 
 #endif // _BACKUPS_H_

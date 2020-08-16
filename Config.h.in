@@ -1,0 +1,2 @@
+#define cpw_antbackup_VERSION_MAYOR @cpw_antbackup_VERSION_MAYOR@
+#define cpw_antbackup_VERSION_MINOR @cpw_antbackup_VERSION_MINOR@

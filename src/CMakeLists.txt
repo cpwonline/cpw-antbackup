@@ -31,13 +31,15 @@ add_executable(
 )
 target_link_libraries(${PROJECT_NAME} PUBLIC BACKUPS MENU)
 
+target_include_directories(
+    ${PROJECT_NAME} PUBLIC
+    "${PROJECT_BINARY_DIR}"
+)
+
+# Install targets
+
 install(TARGETS BACKUPS DESTINATION lib/cpw-antbackup)
 install(FILES "${HEADER}/backups.h" DESTINATION include/cpw-antbackup)
 
 install(TARGETS MENU DESTINATION lib/cpw-antbackup)
 install(FILES "${HEADER}/menu.h" DESTINATION include/cpw-antbackup)
-
-target_include_directories(
-    ${PROJECT_NAME} PUBLIC
-    "${PROJECT_BINARY_DIR}"
-)

@@ -36,3 +36,8 @@ install(FILES "${HEADER}/backups.h" DESTINATION include/cpw-antbackup)
 
 install(TARGETS MENU DESTINATION lib/cpw-antbackup)
 install(FILES "${HEADER}/menu.h" DESTINATION include/cpw-antbackup)
+
+target_include_directories(
+    ${PROJECT_NAME} PUBLIC
+    "${PROJECT_BINARY_DIR}"
+)

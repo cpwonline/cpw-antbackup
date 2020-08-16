@@ -30,3 +30,9 @@ add_executable(
 	main.cpp
 )
 target_link_libraries(${PROJECT_NAME} PUBLIC BACKUPS MENU)
+
+install(TARGETS BACKUPS DESTINATION lib/cpw-antbackup)
+install(FILES "${HEADER}/backups.h" DESTINATION include/cpw-antbackup)
+
+install(TARGETS MENU DESTINATION lib/cpw-antbackup)
+install(FILES "${HEADER}/menu.h" DESTINATION include/cpw-antbackup)

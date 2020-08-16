@@ -13,3 +13,10 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(HEADER ${CMAKE_SOURCE_DIR}/include)
 include_directories(include)
 add_subdirectory(src)
+
+install(
+	TARGETS ${PROJECT_NAME} DESTINATION bin
+)
+install(
+	FILES "${PROJECT_BINARY_DIR}/Config.h" DESTINATION include/cpw-antbackup
+)
